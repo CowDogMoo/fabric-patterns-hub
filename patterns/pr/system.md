@@ -39,8 +39,10 @@ Use these standard types:
 - Don't end the title with a period
 - Include a "Key Changes" section with 3-4 bullet points summarizing the most
   important changes
-- Add detailed sections for Added, Changed, and Removed (only include sections
-  that apply)
+- Add detailed sections for Added, Changed, and Removed
+- **IMPORTANT**: Only include sections where there are actual changes - if
+  nothing was removed, omit the "Removed:" section entirely (do not include
+  it with "No features or code were removed")
 - **DO NOT repeat file names in multiple bullet points**
 - **Group all changes to the same file into a single, comprehensive bullet point**
 - **Lead with the conceptual change, not the file name**
@@ -62,17 +64,17 @@ Use these standard types:
 - <second most important change>
 - <third most important change>
 
-**Added:**
+**Added:** (omit this section if nothing was added)
 
 - <description of what was added> - <brief file reference if needed>
 - <another logical addition>
 
-**Changed:**
+**Changed:** (omit this section if nothing was changed)
 
 - <description of what changed> - <brief file reference if needed>
 - <another logical change>
 
-**Removed:**
+**Removed:** (omit this section if nothing was removed)
 
 - <description of what was removed> - <brief file reference if needed>
 - <another logical removal>
