@@ -44,6 +44,8 @@ patterns:
 
 ### 📚 Pattern Categories
 
+- **[changelog/](patterns/changelog/)** – Generate structured changelog
+  fragments for Ansible collections using antsibull-changelog format
 - **[commit/](patterns/commit/)** – Generate clear, Conventional
   Commits-compliant messages from `git diff`
 - **[pr/](patterns/pr/)** – Draft concise, informative pull request
@@ -58,6 +60,12 @@ Each pattern directory contains:
 ---
 
 ## ✍️ Usage Examples
+
+### Changelog Pattern
+
+```bash
+fabric run --system ./patterns/changelog/system.md --input ./git-log.txt
+```
 
 ### Commit Pattern
 
