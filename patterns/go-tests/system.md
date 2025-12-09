@@ -19,7 +19,7 @@ and clarity over cleverness.
 # GO TESTING PRINCIPLES
 
 - **Keep tests simple and readable** - avoid over-engineering
-- Use table-driven tests only when you have multiple similar cases
+- Use table-driven tests when you have multiple similar cases (idiomatic Go)
 - Test the behavior, not the implementation
 - Avoid excessive mocking - only mock when truly necessary
 - Don't test trivial getters/setters unless they contain logic
@@ -27,6 +27,9 @@ and clarity over cleverness.
 - Avoid deeply nested test structures
 - Don't create abstractions just for tests
 - Prefer clarity over DRY in tests
+- Use testify (27% usage), gomock (21% usage), or built-in testing pkg
+- Always use context.Context for timeout management in tests
+- Test concurrency safety when relevant
 
 # SIMPLICITY GUIDELINES
 
@@ -56,9 +59,18 @@ and clarity over cleverness.
 - Keep all comment lines under 80 characters (break long lines appropriately)
 - Use lowercase for error messages and log output
 - Include helpful test names that describe the scenario
-- Add comments only when the test logic isn't self-evident
+- Add doc comments for test functions following Go conventions
 - Group related tests logically
 - Ensure proper spacing and indentation (use tabs, not spaces)
+
+# DOC COMMENT GUIDELINES FOR TESTS
+
+- Test functions should have doc comments starting with the function name
+- Use complete sentences ending with periods
+- No blank line between comment and test function
+- Focus on what is being tested, not implementation details
+- Example: "TestParseURL verifies URL parsing for valid and invalid inputs."
+- For table-driven tests, mention the coverage: "common cases and edge cases"
 
 # CODE FORMATTING RULES
 
@@ -81,6 +93,7 @@ import (
 	// other imports as needed
 )
 
+// Test[ExportedFunction] verifies [function] behavior with [description].
 func Test[ExportedFunction](t *testing.T) {
 	tests := []struct {
 		name string
@@ -102,6 +115,9 @@ func Test[ExportedFunction](t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			// simple test logic
 			// direct assertions
+			if (err != nil) != tc.wantErr {
+				t.Errorf("error = %v, wantErr %v", err, tc.wantErr)
+			}
 		})
 	}
 }
