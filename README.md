@@ -28,6 +28,10 @@ Example:
 
 Point your Fabric CLI or config to the `system.md` file you want to use.
 
+1. Decide Pattern vs Agent
+
+See [docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md) for when to use a pattern vs an agent.
+
 Example:
 
 ```yaml
