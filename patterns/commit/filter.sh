@@ -5,6 +5,9 @@
 # Read input from stdin
 input=$(cat)
 
+# Strip leading blank lines (fixes GitHub showing "Commit {sha} pushed by {user}")
+input=$(echo "$input" | sed '/./,$!d')
+
 # Remove code block markers (backticks)
 output="${input//\`\`\`/}"
 
