@@ -57,3 +57,5 @@ jobs:
       - name: Run pre-commit
         run: |
           task -y pre-commit:run-pre-commit
+        env:
+          TASK_X_REMOTE_TASKFILES: "1"
