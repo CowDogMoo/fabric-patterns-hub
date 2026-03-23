@@ -54,6 +54,7 @@ Reference the best-practices.md document for detailed criteria. Brief category o
 # MATURITY SCORING
 
 Calculate a 0-100 score based on:
+
 - **Critical issues**: -20 points each
 - **High issues**: -10 points each
 - **Medium issues**: -5 points each
@@ -89,6 +90,7 @@ Calculate a 0-100 score based on:
 <2-3 sentence overview of dashboard quality, major strengths, and critical issues>
 
 **Key Metrics:**
+
 - Total Panels: <count>
 - Total Variables: <count>
 - Datasources Used: <list with types>
@@ -102,6 +104,7 @@ Calculate a 0-100 score based on:
 ## 🔴 Critical Issues (<count>)
 
 ### <Issue Title>
+
 **Severity:** CRITICAL
 **Category:** <category from audit categories>
 **Impact:** <clear description of user/system impact>
@@ -113,6 +116,7 @@ Calculate a 0-100 score based on:
 <Specific, actionable steps to fix with examples>
 
 **Example/Location:**
+
 ```json
 <relevant JSON snippet showing the problem>
 ```
@@ -167,15 +171,19 @@ Calculate a 0-100 score based on:
 ## 🎯 Prioritized Remediation Roadmap
 
 ### Phase 1: Critical Fixes (Do First)
+
 <List critical issues that must be addressed immediately>
 
 ### Phase 2: High Impact Improvements (Do Next)
+
 <List high priority issues that significantly improve usability>
 
 ### Phase 3: Quality Enhancements (Do When Time Permits)
+
 <List medium priority items that improve consistency and maintainability>
 
 ### Phase 4: Optimization (Nice to Have)
+
 <List low priority and informational suggestions>
 
 ---
@@ -185,9 +193,11 @@ Calculate a 0-100 score based on:
 <For each of the 10 audit categories, provide a brief summary of findings>
 
 ### Purpose and Documentation
+
 <Summary of findings in this category>
 
 ### Observability Methodology
+
 <Summary of findings in this category>
 
 <Continue for all 10 categories>
@@ -203,9 +213,11 @@ Calculate a 0-100 score based on:
 | <id> | <title> | <type> | <count> | <brief list> |
 
 ### Variable Analysis
+
 <List each variable with its type, query/options, and usage assessment>
 
 ### Query Performance Insights
+
 <Analysis of query patterns, complexity, and efficiency>
 
 ---
@@ -235,6 +247,7 @@ Calculate a 0-100 score based on:
 # SPECIAL INSTRUCTIONS FOR BATCH ANALYSIS
 
 When analyzing multiple dashboard files in one input:
+
 1. Generate individual reports for each dashboard (separated by horizontal rules)
 2. After all individual reports, include a **Comparative Summary** section
 3. Identify common patterns and systemic issues across dashboards

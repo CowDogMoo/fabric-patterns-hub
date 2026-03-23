@@ -80,12 +80,14 @@ Structure information from general to specific:
 ### Language and Style
 
 **DO:**
+
 - Use simple, direct language in active voice
 - Write short sentences and paragraphs
 - Define technical terms on first use
 - Provide context for decisions
 
 **DON'T:**
+
 - Use vague language ("the usual setup")
 - Include placeholder text ("TODO", "Coming soon")
 - Create walls of text
@@ -94,6 +96,7 @@ Structure information from general to specific:
 ### Code Examples
 
 **Good code examples:**
+
 ```bash
 # Install the package
 npm install my-package
@@ -103,6 +106,7 @@ npm run example
 ```
 
 **Bad code examples:**
+
 ```bash
 # TODO: Add installation command
 install-command-here
@@ -246,12 +250,14 @@ npm run dev
 ### CLI Tool
 
 **Emphasize:**
+
 - Command-line usage examples
 - Available commands and options
 - Input/output formats
 - Shell completion setup
 
 **Example sections:**
+
 ```markdown
 ## Commands
 
@@ -272,12 +278,14 @@ npm run dev
 ### Library/Package
 
 **Emphasize:**
+
 - API documentation
 - Code examples for common use cases
 - Type definitions
 - Integration examples
 
 **Example sections:**
+
 ```markdown
 ## API Reference
 
@@ -294,12 +302,14 @@ npm run dev
 ### Web Application
 
 **Emphasize:**
+
 - Live demo link
 - Screenshots/GIFs
 - Deployment instructions
 - Browser support
 
 **Example sections:**
+
 ```markdown
 ## Demo
 
@@ -314,6 +324,7 @@ Try the live demo at https://example.com/demo
 ### Framework/SDK
 
 **Emphasize:**
+
 - Architecture overview
 - Getting started guide
 - Plugin/extension system
@@ -322,6 +333,7 @@ Try the live demo at https://example.com/demo
 ### Monorepo
 
 **Emphasize:**
+
 - Package structure
 - Workspace commands
 - Cross-package dependencies
@@ -368,6 +380,7 @@ Try the live demo at https://example.com/demo
 Badges provide at-a-glance project status. Place after title, limit to 5-8.
 
 **Recommended badges:**
+
 ```markdown
 ![Build Status](https://img.shields.io/github/actions/workflow/status/username/repo/ci.yml?branch=main)
 ![Coverage](https://img.shields.io/codecov/c/github/username/repo)
@@ -377,6 +390,7 @@ Badges provide at-a-glance project status. Place after title, limit to 5-8.
 ```
 
 **Badge categories:**
+
 | Category | Purpose |
 |----------|---------|
 | Build status | CI/CD pipeline status |
@@ -391,12 +405,14 @@ Badges provide at-a-glance project status. Place after title, limit to 5-8.
 Visual elements improve comprehension dramatically.
 
 **When to use:**
+
 - CLI tools → Show terminal output
 - Web apps → Include screenshots
 - Libraries → Show code examples with results
 - Performance tools → Display graphs and metrics
 
 **Best practices:**
+
 - Keep images under 500KB
 - GIFs max 30 seconds
 - Provide alt text for accessibility
@@ -404,6 +420,7 @@ Visual elements improve comprehension dramatically.
 - Use relative paths
 
 **Tools:**
+
 | Tool | Purpose |
 |------|---------|
 | [Terminalizer](https://github.com/faressoft/terminalizer) | Record terminal sessions |
@@ -604,6 +621,7 @@ Study these for inspiration:
 A README is never "done." Maintain it as you would code.
 
 **With each release:**
+
 - [ ] Update version numbers
 - [ ] Update screenshots if UI changed
 - [ ] Add new features to features list
@@ -611,6 +629,7 @@ A README is never "done." Maintain it as you would code.
 - [ ] Check all links
 
 **Quarterly:**
+
 - [ ] Review and update prerequisites
 - [ ] Refresh benchmark data
 - [ ] Check for broken links
@@ -639,12 +658,14 @@ A README is never "done." Maintain it as you would code.
 ### Too Vague
 
 **Bad:**
+
 ```markdown
 Install the tool using the standard method.
 Configure it as needed for your environment.
 ```
 
 **Good:**
+
 ```markdown
 Install with npm:
 \`\`\`bash
@@ -661,12 +682,14 @@ region: us-west-2
 ### Missing Prerequisites
 
 **Bad:**
+
 ```markdown
 ## Installation
 Run `make install` to install.
 ```
 
 **Good:**
+
 ```markdown
 ## Installation
 
@@ -684,12 +707,14 @@ make install
 ### No Working Examples
 
 **Bad:**
+
 ```markdown
 ## Usage
 Use the API to do things.
 ```
 
 **Good:**
+
 ```markdown
 ## Usage
 

@@ -5,6 +5,7 @@ A comprehensive fabric pattern for generating high-quality README documentation 
 ## Pattern Structure
 
 This pattern includes:
+
 - **`system.md`** - The README generation framework and prompt engineering for LLM
 - **`readme-standards.md`** - Comprehensive reference document with README standards (source of truth)
 - **`filter.sh`** - Post-processing to clean up output formatting
@@ -17,6 +18,7 @@ The pattern is designed with **separation of concerns**: the `readme-standards.m
 ## Purpose
 
 This pattern helps you:
+
 - **Generate READMEs** for new projects
 - **Improve existing documentation** to meet standards
 - **Learn README best practices** through templates
@@ -184,12 +186,14 @@ MIT License
 ### When to Use This Pattern
 
 **Good use cases:**
+
 - Creating README for new projects
 - Improving existing README documentation
 - Generating consistent documentation across repos
 - Learning README best practices
 
 **Not ideal for:**
+
 - API documentation (use dedicated tools)
 - Full documentation sites (use static site generators)
 

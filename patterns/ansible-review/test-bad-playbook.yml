@@ -33,7 +33,7 @@
     # Jinja2 not quoted
     - name: Template config
       template:
-        src: {{ config_template }}
+        src: "{{ config_template }}"
         dest: /etc/myapp/config.yml
 
     # Using yes/no instead of true/false

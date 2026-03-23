@@ -21,6 +21,7 @@ A comprehensive guide to creating effective, maintainable, and scalable Grafana 
 ### Know Your Purpose
 
 Every dashboard should have a clear purpose. Ask yourself:
+
 - **What story are you trying to tell?** Dashboards should present data in a logical progression (large to small, general to specific)
 - **What question does this dashboard answer?** If it doesn't answer a question or tell a story, it shouldn't exist
 - **Who is the audience?** Different roles have different needs:
@@ -31,6 +32,7 @@ Every dashboard should have a clear purpose. Ask yourself:
 ### Reduce Cognitive Load
 
 Design dashboards to minimize the mental effort required to interpret them:
+
 - Graphs should be self-explanatory to viewers unfamiliar with the system
 - Use clear labels and descriptions
 - Avoid information overload - focus on what matters
@@ -39,6 +41,7 @@ Design dashboards to minimize the mental effort required to interpret them:
 ### Consistency is Key
 
 Once you establish design guidelines:
+
 - Document them and share with your team
 - Use template variables to maintain consistency
 - Consider using scripting libraries (grafonnet, grafanalib) for programmatic dashboard generation
@@ -71,6 +74,7 @@ Best for monitoring services and user-facing applications:
 *"The RED method tells you how happy your users are"*
 
 **RED Method Dashboard Pattern:**
+
 - Request and error rates on the left
 - Latency duration on the right
 - One row per service
@@ -94,12 +98,14 @@ Choose the methodology that best fits your use case, document it, and maintain c
 ### Naming and Documentation
 
 **Dashboard Names:**
+
 - Use meaningful, descriptive names
 - Prefix experimental dashboards with "TEST" or "TMP"
 - Include your name or initials for ownership clarity
 - Add relevant tags for easy discovery
 
 **Documentation:**
+
 - Add Text panels explaining the dashboard's purpose and usage
 - Document individual panels with descriptions (visible on hover)
 - Include links to runbooks or related documentation
@@ -118,17 +124,20 @@ Choose the methodology that best fits your use case, document it, and maintain c
 ### Graph and Visualization Best Practices
 
 **Axes and Scaling:**
+
 - Normalize axes for fair comparisons (e.g., use percentages instead of raw numbers when comparing resources)
 - Use both Y-axes when displaying metrics with different units or scales
 - Set appropriate min/max values to avoid misleading visualizations
 
 **Graph Types:**
+
 - **Avoid stacking graphs** - stacked graphs can hide important data
 - Use time series for temporal trends and patterns
 - Use stat panels for single value snapshots
 - Use gauges to show values relative to min/max thresholds
 
 **Data Presentation:**
+
 - Show data at appropriate granularity for the time range
 - Use appropriate aggregation functions (avg, max, p95, etc.)
 - Include sparklines in stat panels to show trends at a glance
@@ -142,6 +151,7 @@ Guide viewers to important information through strategic design:
 ### Alignment
 
 Follow natural reading patterns:
+
 - In English-speaking contexts: left-to-right, top-to-bottom
 - Place key metrics and KPIs in the upper-left area
 - Group related metrics together
@@ -149,6 +159,7 @@ Follow natural reading patterns:
 ### Size
 
 "The bigger the size of the component, the greater the perception of importance"
+
 - Critical metrics should be larger and more prominent
 - Supporting details can be smaller
 - Use the full width of the dashboard for important visualizations
@@ -176,12 +187,14 @@ Choose the right visualization for your data type:
 ### Time Series Panels
 
 **Best for:**
+
 - Displaying temporal trends, patterns, and anomalies
 - Metrics like latency, request rates, resource utilization
 - Large numbers of time-based data points
 - Identifying patterns over time
 
 **Features:**
+
 - X-axis shows time progression
 - Y-axis shows metric magnitude
 - Supports multiple series on one graph
@@ -190,12 +203,14 @@ Choose the right visualization for your data type:
 ### Stat Panels
 
 **Best for:**
+
 - Displaying single values of interest (latest/current value)
 - Monitoring key metrics at a glance (application health, bug counts, sales totals)
 - Displaying aggregated data (average response time)
 - Highlighting values outside normal thresholds
 
 **Features:**
+
 - Shows one large stat value
 - Optional sparkline graph for trend context
 - Background or value color based on thresholds
@@ -204,12 +219,14 @@ Choose the right visualization for your data type:
 ### Gauge Panels
 
 **Best for:**
+
 - Presenting values relative to min/max ranges
 - Visualizing progress toward a goal
 - Comparing multiple values simultaneously
 - Resource utilization (CPU, memory, disk)
 
 **Types:**
+
 - Standard radial gauge (single value)
 - Horizontal/vertical bar gauge (multiple series)
 - Three display modes for different use cases
@@ -217,6 +234,7 @@ Choose the right visualization for your data type:
 ### Bar Gauge Panels
 
 Useful for:
+
 - Comparing multiple values
 - Progress visualization
 - Displaying multiple series compactly (unlike standard gauge)
@@ -228,12 +246,14 @@ Useful for:
 ### Template Variables
 
 **Use template variables to:**
+
 - Eliminate dashboard duplication (no need for per-node dashboards)
 - Make data sources configurable
 - Enable filtering by environment, service, instance, etc.
 - Create reusable dashboards across clusters
 
 **Benefits:**
+
 - Prevents dashboard sprawl
 - Easier maintenance
 - Consistent user experience
@@ -248,6 +268,7 @@ Implement drill-down capabilities:
 3. **Detailed dashboards**: Deep-dive into specific components or troubleshooting
 
 **Navigation techniques:**
+
 - Dashboard links in panels (drill-through on click)
 - Panel links to related dashboards
 - Dashboard list visualizations for easy navigation
@@ -257,6 +278,7 @@ Implement drill-down capabilities:
 ### Cross-References and Linking
 
 Create connections between related dashboards:
+
 - Link from overview panels to detailed views
 - Include "back" navigation to parent dashboards
 - Use consistent URL parameters across dashboard hierarchy
@@ -271,6 +293,7 @@ Create connections between related dashboards:
 Dashboard sprawl is a common problem that reduces dashboard effectiveness:
 
 **Prevention strategies:**
+
 - **Regular audits**: Review and remove irrelevant or outdated dashboards
 - **Prohibit casual copying**: Link to master dashboards with URL parameters instead
 - **Track usage**: Use Grafana Enterprise features to identify unused dashboards
@@ -280,6 +303,7 @@ Dashboard sprawl is a common problem that reduces dashboard effectiveness:
 ### Version Control
 
 **Best practices:**
+
 - Store dashboard JSON in version control (Git)
 - Don't rely solely on Grafana's built-in versioning
 - Use infrastructure-as-code approaches
@@ -297,11 +321,13 @@ Dashboard sprawl is a common problem that reduces dashboard effectiveness:
 ### Consistency Through Automation
 
 Use scripting libraries for standardized dashboards:
+
 - **Grafonnet**: Jsonnet library for generating Grafana dashboards
 - **Grafanalib**: Python library for building Grafana dashboards
 - **Terraform/Pulumi**: Infrastructure-as-code for Grafana resources
 
 **Benefits:**
+
 - Ensures consistent patterns and styles
 - Easier to maintain and update
 - Version controlled dashboard definitions
@@ -341,6 +367,7 @@ Use scripting libraries for standardized dashboards:
 Organizations typically evolve through these stages:
 
 ### Low Maturity: Dashboard Sprawl
+
 - Uncontrolled dashboard creation
 - Duplicated dashboards for different environments
 - No naming conventions or organization
@@ -348,6 +375,7 @@ Organizations typically evolve through these stages:
 - High maintenance burden
 
 ### Medium Maturity: Methodical Approach
+
 - Adoption of RED/USE/Golden Signals methodology
 - Template variables to prevent duplication
 - Hierarchical organization with drill-downs
@@ -355,6 +383,7 @@ Organizations typically evolve through these stages:
 - Regular cleanup and maintenance
 
 ### High Maturity: Optimized Ecosystem
+
 - Scripted dashboard generation (infrastructure-as-code)
 - Comprehensive version control
 - Automated testing and validation
@@ -366,6 +395,7 @@ Organizations typically evolve through these stages:
 ### Continuous Improvement
 
 Observability requires ongoing iteration:
+
 - Regularly reassess metrics based on evolving needs
 - Optimize layouts based on user feedback
 - Update methodologies as systems evolve

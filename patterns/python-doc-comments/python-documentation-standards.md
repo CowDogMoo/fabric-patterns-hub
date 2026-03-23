@@ -54,6 +54,7 @@ def kos_root():
 ```
 
 **Rules:**
+
 - Closing quotes on the **same line**
 - **Imperative mood**: "Return X" not "Returns X"
 - End with a **period**
@@ -76,6 +77,7 @@ def complex(real=0.0, imag=0.0):
 ```
 
 **Structure:**
+
 1. Summary line (fits on one line)
 2. Blank line
 3. Detailed description
@@ -101,6 +103,7 @@ import sys
 ```
 
 **Placement:**
+
 - Must be the **first statement** in the module
 - Comes **after** magic comments (shebang, encoding)
 - Comes **before** imports
@@ -135,6 +138,7 @@ def fetch_bigtable_rows(big_table, keys, other_silly_variable=None):
 ```
 
 **Sections:**
+
 | Section | Purpose |
 |---------|---------|
 | Args | List each parameter with description |
@@ -166,6 +170,7 @@ class SampleClass:
 ```
 
 **Key Points:**
+
 - Summarize what instances represent
 - List public attributes in **Attributes** section
 - Document `__init__` separately
@@ -173,6 +178,7 @@ class SampleClass:
 ### Docstring Styles Comparison
 
 **Google Style** (recommended):
+
 ```python
 def function(arg1: int, arg2: str) -> bool:
     """Summary line.
@@ -191,6 +197,7 @@ def function(arg1: int, arg2: str) -> bool:
 ```
 
 **NumPy Style** (scientific computing):
+
 ```python
 def function(arg1: int, arg2: str) -> bool:
     """Summary line.
@@ -216,6 +223,7 @@ def function(arg1: int, arg2: str) -> bool:
 ```
 
 **Sphinx/reStructuredText Style**:
+
 ```python
 def function(arg1: int, arg2: str) -> bool:
     """Summary line.
@@ -248,6 +256,7 @@ return sorted(active_users, key=lambda u: u.registered_at)
 ```
 
 **Rules:**
+
 - Start with `#` followed by a single space
 - Indent to the same level as the code
 - Separate paragraphs with a line containing only `#`
@@ -268,6 +277,7 @@ x = x + 1  # Increment x
 ```
 
 **Rules:**
+
 - Separate from code by **at least 2 spaces**
 - Start with `#` and a single space
 - Maximum **72 characters** recommended
@@ -374,6 +384,7 @@ def leaky_function():
 ```
 
 **Metadata Fields:**
+
 - `<initials>` - Owner/author
 - `d:date` - Due date (ISO 8601)
 - `p:0-3` - Priority (0=highest)
@@ -400,6 +411,7 @@ Special comments that provide instructions to the interpreter.
 ```
 
 **Rules:**
+
 - Must be the **first line**
 - `#!/usr/bin/env python3` is portable (uses PATH)
 - Only needed for executable scripts
@@ -411,6 +423,7 @@ Special comments that provide instructions to the interpreter.
 ```
 
 **Rules:**
+
 - Must be on first or second line
 - Usually **unnecessary** (UTF-8 is default in Python 3)
 - Required only for non-UTF-8 encodings
@@ -508,12 +521,14 @@ matrix = [
 ### Redundant Comments
 
 **Bad:**
+
 ```python
 x = x + 1  # Increment x
 name = "John"  # Set name to John
 ```
 
 **Good:**
+
 ```python
 x = x + 1  # Compensate for zero-based indexing
 ```
@@ -521,6 +536,7 @@ x = x + 1  # Compensate for zero-based indexing
 ### Redundant Docstrings
 
 **Bad:**
+
 ```python
 def add(a, b):
     """Add two numbers.
@@ -532,6 +548,7 @@ def add(a, b):
 ```
 
 **Good:**
+
 ```python
 def add(a, b):
     """Return the sum of a and b."""
@@ -541,6 +558,7 @@ def add(a, b):
 ### Commented-Out Code
 
 **Bad:**
+
 ```python
 def current():
     # old_way()
@@ -549,6 +567,7 @@ def current():
 ```
 
 **Good:**
+
 ```python
 def current():
     return new_way()
@@ -557,6 +576,7 @@ def current():
 ### Lying Comments
 
 **Bad:**
+
 ```python
 # Return the user's full name
 def get_username(user):
@@ -566,6 +586,7 @@ def get_username(user):
 ### Over-Commenting
 
 **Bad:**
+
 ```python
 def process_order(order):
     # Validate the order
@@ -581,6 +602,7 @@ def process_order(order):
 ```
 
 **Good:**
+
 ```python
 def process_order(order):
     if not order.is_valid():
@@ -591,6 +613,7 @@ def process_order(order):
 ### Missing Type Context
 
 **Old way (duplicates type info):**
+
 ```python
 def process_user(user):
     """Process a user.
@@ -605,6 +628,7 @@ def process_user(user):
 ```
 
 **Modern way (types in signature):**
+
 ```python
 from typing import TypedDict
 

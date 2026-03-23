@@ -6,11 +6,12 @@ This playbook exhibits several common anti-patterns and violations of modern Ans
 
 ### Hardcoded and Exposed Secrets
 
-**Severity:** CRITICAL  
-**Category:** Security  
+**Severity:** CRITICAL
+**Category:** Security
 **File:** playbook:lines 11, 37
 
 **Problem:**
+
 ```yaml
 # Line 11
 user:
@@ -23,6 +24,7 @@ set_fact:
 ```
 
 **Solution:**
+
 ```yaml
 # Use Ansible Vault or external secrets management
 user:
@@ -40,18 +42,19 @@ set_fact:
   no_log: true
 ```
 
-**Explanation:**  
+**Explanation:**
 Hardcoded secrets and plaintext sensitive variables are major security violations. Per `ansible-standards.md`, secrets must be stored in Ansible Vault or retrieved from a secure external system, and tasks handling them must use `no_log: true`. This mitigates risk of credential leakage.
 
 ---
 
 ### Non-Idempotent and Unguarded Command/Shell Usage
 
-**Severity:** CRITICAL  
-**Category:** Task Quality, Idempotency  
+**Severity:** CRITICAL
+**Category:** Task Quality, Idempotency
 **File:** playbook:lines 7, 19
 
 **Problem:**
+
 ```yaml
 # Line 7
 - name: install dependencies
@@ -64,6 +67,7 @@ Hardcoded secrets and plaintext sensitive variables are major security violation
 ```
 
 **Solution:**
+
 ```yaml
 # Use proper modules for package installation
 - name: Install dependencies
@@ -81,18 +85,19 @@ Hardcoded secrets and plaintext sensitive variables are major security violation
   changed_when: false
 ```
 
-**Explanation:**  
+**Explanation:**
 Direct `command`/`shell` calls for package installation or information gathering are not idempotent and bypass Ansible’s state management. Always use the relevant module (e.g., `ansible.builtin.apt`). Shell/command tasks must include `changed_when` and/or `creates/removes` to ensure proper idempotency and check mode compatibility.
 
 ---
 
 ### Deprecated and Non-Idiomatic Syntax (with_items)
 
-**Severity:** HIGH  
-**Category:** Task Quality  
+**Severity:** HIGH
+**Category:** Task Quality
 **File:** playbook:lines 41-46
 
 **Problem:**
+
 ```yaml
 - name: Install multiple packages
   apt:
@@ -104,6 +109,7 @@ Direct `command`/`shell` calls for package installation or information gathering
 ```
 
 **Solution:**
+
 ```yaml
 - name: Install multiple packages
   ansible.builtin.apt:
@@ -114,7 +120,7 @@ Direct `command`/`shell` calls for package installation or information gathering
     state: present
 ```
 
-**Explanation:**  
+**Explanation:**
 `with_items` looping with package modules is deprecated and non-idiomatic. Use the module’s native list support as per the latest Ansible standards for clarity and efficiency.
 
 ---
@@ -123,10 +129,11 @@ Direct `command`/`shell` calls for package installation or information gathering
 
 ### Use Fully Qualified Collection Names (FQCN) and Task Naming
 
-**Severity:** MEDIUM  
+**Severity:** MEDIUM
 **Category:** Task Quality
 
 **Current:**
+
 ```yaml
 - apt:
     name: nginx
@@ -139,6 +146,7 @@ Direct `command`/`shell` calls for package installation or information gathering
 ```
 
 **Suggested:**
+
 ```yaml
 - name: Ensure nginx is at latest version
   ansible.builtin.apt:
@@ -152,17 +160,18 @@ Direct `command`/`shell` calls for package installation or information gathering
     mode: "0755"
 ```
 
-**Why:**  
+**Why:**
 All tasks should have descriptive names, and FQCNs ensure clarity, avoid ambiguity, and follow best practices per `ansible-standards.md`.
 
 ---
 
 ### Proper Quoting and Jinja2 Usage
 
-**Severity:** MEDIUM  
+**Severity:** MEDIUM
 **Category:** Templates & Files
 
 **Current:**
+
 ```yaml
 - template:
     src: {{ config_template }}
@@ -170,6 +179,7 @@ All tasks should have descriptive names, and FQCNs ensure clarity, avoid ambigui
 ```
 
 **Suggested:**
+
 ```yaml
 - name: Template config
   ansible.builtin.template:
@@ -177,17 +187,18 @@ All tasks should have descriptive names, and FQCNs ensure clarity, avoid ambigui
     dest: /etc/myapp/config.yml
 ```
 
-**Why:**  
+**Why:**
 Variables in parameters must be always quoted for YAML and Jinja2 parsing safety and compatibility.
 
 ---
 
 ### Use Boolean Literals Instead of yes/no
 
-**Severity:** MEDIUM  
+**Severity:** MEDIUM
 **Category:** Task Quality
 
 **Current:**
+
 ```yaml
 - service:
     name: nginx
@@ -196,6 +207,7 @@ Variables in parameters must be always quoted for YAML and Jinja2 parsing safety
 ```
 
 **Suggested:**
+
 ```yaml
 - name: Enable and start nginx
   ansible.builtin.service:
@@ -204,17 +216,18 @@ Variables in parameters must be always quoted for YAML and Jinja2 parsing safety
     state: started
 ```
 
-**Why:**  
+**Why:**
 Use `true`/`false` for boolean values to avoid ambiguity and ensure YAML parsing consistency.
 
 ---
 
 ### Simplify Complex Conditionals
 
-**Severity:** LOW  
+**Severity:** LOW
 **Category:** Playbook Structure
 
 **Current:**
+
 ```yaml
 - debug:
     msg: "Complex logic"
@@ -222,6 +235,7 @@ Use `true`/`false` for boolean values to avoid ambiguity and ensure YAML parsing
 ```
 
 **Suggested:**
+
 ```yaml
 - name: Debug complex logic
   ansible.builtin.debug:
@@ -232,17 +246,18 @@ Use `true`/`false` for boolean values to avoid ambiguity and ensure YAML parsing
       (var5 | length > 3)
 ```
 
-**Why:**  
+**Why:**
 Multi-line `when` statements or breaking down complex conditions can improve readability and maintainability.
 
 ---
 
 ### Add `changed_when` for Non-Idempotent Commands
 
-**Severity:** MEDIUM  
+**Severity:** MEDIUM
 **Category:** Task Quality
 
 **Current:**
+
 ```yaml
 - name: Check version
   command: /opt/app/version.sh
@@ -250,6 +265,7 @@ Multi-line `when` statements or breaking down complex conditions can improve rea
 ```
 
 **Suggested:**
+
 ```yaml
 - name: Check app version
   ansible.builtin.command: /opt/app/version.sh
@@ -257,17 +273,18 @@ Multi-line `when` statements or breaking down complex conditions can improve rea
   changed_when: false
 ```
 
-**Why:**  
+**Why:**
 Explicitly stating `changed_when: false` for read-only commands avoids false-positive changes and improves idempotency.
 
 ---
 
 ### Handler Naming and Notification
 
-**Severity:** LOW  
+**Severity:** LOW
 **Category:** Handlers
 
 **Current:**
+
 ```yaml
 - name: restart nginx
   service: name=nginx state=restarted
@@ -275,6 +292,7 @@ Explicitly stating `changed_when: false` for read-only commands avoids false-pos
 ```
 
 **Suggested:**
+
 ```yaml
 - name: Restart nginx
   ansible.builtin.service:
@@ -283,7 +301,7 @@ Explicitly stating `changed_when: false` for read-only commands avoids false-pos
   listen: nginx_config_changed
 ```
 
-**Why:**  
+**Why:**
 Handler names should use snake_case and be descriptive for clarity and consistency with notification patterns.
 
 ---

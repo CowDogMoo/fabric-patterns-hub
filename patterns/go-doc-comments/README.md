@@ -5,6 +5,7 @@ A comprehensive fabric pattern for generating and improving Go documentation com
 ## Pattern Structure
 
 This pattern includes:
+
 - **`system.md`** - The documentation framework and prompt engineering for LLM
 - **`go-documentation-standards.md`** - Comprehensive reference document with standards (source of truth)
 - **`filter.sh`** - Post-processing to clean up output formatting
@@ -17,6 +18,7 @@ The pattern is designed with **separation of concerns**: the `go-documentation-s
 ## Purpose
 
 This pattern helps you:
+
 - **Generate documentation** for undocumented Go code
 - **Improve existing documentation** to meet standards
 - **Learn Go doc conventions** through examples
@@ -184,12 +186,14 @@ func (u *User) Validate() error {
 ### When to Use This Pattern
 
 **Good use cases:**
+
 - Adding documentation to legacy code
 - Ensuring consistent documentation style
 - Learning Go documentation conventions
 - Preparing code for open source release
 
 **Not ideal for:**
+
 - Highly domain-specific documentation (provide context)
 - Complex API documentation (may need manual refinement)
 

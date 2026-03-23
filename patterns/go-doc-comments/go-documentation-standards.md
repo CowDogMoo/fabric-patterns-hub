@@ -49,6 +49,7 @@ package regexp
 ```
 
 **Rules:**
+
 - Start with "Package [name]"
 - Only include in ONE file of multi-file packages
 - Directly adjacent to package clause (no blank line)
@@ -66,12 +67,14 @@ func (f *File) Open() bool
 ```
 
 **Rules:**
+
 - Start with function/method name
 - For boolean returns: "reports whether [condition]" (omit "or not")
 - Reference parameters/results without special syntax
 - Describe return values and side effects
 
 **Boolean Functions:**
+
 ```go
 // IsValid reports whether the configuration is valid.
 func (c *Config) IsValid() bool
@@ -95,6 +98,7 @@ type Request struct {
 ```
 
 **Rules:**
+
 - Use "A [Type] represents..." or "[Type] is..."
 - Document concurrency safety if relevant
 - Explain zero value behavior if non-obvious
@@ -103,6 +107,7 @@ type Request struct {
 ### Constants and Variables
 
 **Grouped constants:**
+
 ```go
 const (
     // MaxSize is the maximum allowed file size in bytes.
@@ -114,12 +119,14 @@ const (
 ```
 
 **Ungrouped:**
+
 ```go
 // ErrNotFound is returned when a resource cannot be located.
 var ErrNotFound = errors.New("not found")
 ```
 
 **Rules:**
+
 - Grouped: single doc comment + end-of-line comments
 - Ungrouped: full doc comments with complete sentences
 
@@ -129,7 +136,7 @@ var ErrNotFound = errors.New("not found")
 
 ### Headings (Go 1.19+)
 
-Use `# ` (with space) on single unindented line, surrounded by blank lines:
+Use `#` (with space) on single unindented line, surrounded by blank lines:
 
 ```go
 // Package strings provides UTF-8 string manipulation.
@@ -148,6 +155,7 @@ Use `# ` (with space) on single unindented line, surrounded by blank lines:
 ```
 
 **Syntax:**
+
 | Pattern | Description |
 |---------|-------------|
 | `[Name]` | Local identifier |
@@ -166,6 +174,7 @@ Use `# ` (with space) on single unindented line, surrounded by blank lines:
 ### Lists
 
 **Bullet lists** (indent 2 spaces before marker, 4 for continuation):
+
 ```go
 // Features:
 //   - Fast performance
@@ -174,6 +183,7 @@ Use `# ` (with space) on single unindented line, surrounded by blank lines:
 ```
 
 **Numbered lists:**
+
 ```go
 // Usage:
 //  1. Initialize the client
@@ -182,6 +192,7 @@ Use `# ` (with space) on single unindented line, surrounded by blank lines:
 ```
 
 **Rules:**
+
 - Use `-` for bullets (gofmt normalizes)
 - No nested lists (not supported)
 - Only paragraphs allowed in lists
@@ -193,11 +204,11 @@ Indent lines that aren't list markers:
 ```go
 // Example usage:
 //
-//	client := NewClient()
-//	err := client.Connect("localhost:8080")
-//	if err != nil {
-//		log.Fatal(err)
-//	}
+// client := NewClient()
+// err := client.Connect("localhost:8080")
+// if err != nil {
+//  log.Fatal(err)
+// }
 ```
 
 ---
@@ -278,12 +289,14 @@ func (s *Server) Shutdown(ctx context.Context) error
 ### Redundant Comments
 
 **Bad:**
+
 ```go
 // Process processes the data
 func Process(data []byte) error
 ```
 
 **Good:**
+
 ```go
 // Process validates and transforms the input data according
 // to the configured rules, returning an error if validation fails.
@@ -293,12 +306,14 @@ func Process(data []byte) error
 ### Implementation Details
 
 **Bad:**
+
 ```go
 // GetUser queries the database using a prepared statement
 func GetUser(id int) (*User, error)
 ```
 
 **Good:**
+
 ```go
 // GetUser returns the user with the given ID or returns
 // an error if the user doesn't exist.
@@ -308,12 +323,14 @@ func GetUser(id int) (*User, error)
 ### Missing Declared Name
 
 **Bad:**
+
 ```go
 // Returns the current time in UTC format
 func Now() time.Time
 ```
 
 **Good:**
+
 ```go
 // Now returns the current time in UTC.
 func Now() time.Time
@@ -322,6 +339,7 @@ func Now() time.Time
 ### Improper Indentation
 
 **Bad (breaks list):**
+
 ```go
 // Uses:
 //   - Feature one. This wraps
@@ -329,6 +347,7 @@ func Now() time.Time
 ```
 
 **Good:**
+
 ```go
 // Uses:
 //   - Feature one. This wraps
@@ -338,6 +357,7 @@ func Now() time.Time
 ### Blank Line Between Comment and Declaration
 
 **Bad:**
+
 ```go
 // GetUser returns the user with the given ID.
 
@@ -345,6 +365,7 @@ func GetUser(id int) (*User, error)
 ```
 
 **Good:**
+
 ```go
 // GetUser returns the user with the given ID.
 func GetUser(id int) (*User, error)
@@ -383,6 +404,7 @@ type Op uint8
 ```
 
 **Rules:**
+
 - gofmt moves directives after blank line at end of comment
 - Not part of godoc output
 - Common directives: `//go:generate`, `//go:embed`, `//go:build`
@@ -394,6 +416,7 @@ type Op uint8
 ### gofmt
 
 Automatically formats doc comments:
+
 - Normalizes list indentation (converts `*`, `+`, `•` to `-`)
 - Converts backticks and quotes to Unicode
 - Removes common indentation prefix
@@ -434,6 +457,7 @@ Online documentation rendering at https://pkg.go.dev - automatically extracts an
 From Google Style Guide: add clarifying comments for unusual patterns that might confuse readers.
 
 **Example - unusual condition:**
+
 ```go
 if err == nil {
     // if NO error, proceed with cleanup
@@ -442,6 +466,7 @@ if err == nil {
 ```
 
 **When to add signal boosting:**
+
 - Unusual control flow (checking for success instead of failure)
 - Non-obvious side effects
 - Intentionally empty blocks

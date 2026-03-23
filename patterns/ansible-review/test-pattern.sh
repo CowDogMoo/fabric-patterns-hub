@@ -19,12 +19,12 @@ PATTERN_INSTALLED_BY_US=false
 
 # Cleanup function to remove pattern if we installed it
 cleanup() {
-    if [ "$PATTERN_INSTALLED_BY_US" = true ]; then
-        echo
-        echo -e "${YELLOW}Cleaning up: Removing temporarily installed pattern${NC}"
-        rm -f ~/.config/fabric/patterns/"$PATTERN_NAME"
-        echo -e "${GREEN}✓ Pattern removed${NC}"
-    fi
+	if [ "$PATTERN_INSTALLED_BY_US" = true ]; then
+		echo
+		echo -e "${YELLOW}Cleaning up: Removing temporarily installed pattern${NC}"
+		rm -f ~/.config/fabric/patterns/"$PATTERN_NAME"
+		echo -e "${GREEN}✓ Pattern removed${NC}"
+	fi
 }
 
 # Set trap to cleanup on exit (normal or error)
@@ -36,24 +36,24 @@ echo -e "${BLUE}========================================${NC}"
 echo
 
 # Check if fabric is installed
-if ! command -v fabric &> /dev/null; then
-    echo -e "${RED}Error: fabric is not installed${NC}"
-    echo "Please install fabric: https://github.com/danielmiessler/fabric"
-    exit 1
+if ! command -v fabric &>/dev/null; then
+	echo -e "${RED}Error: fabric is not installed${NC}"
+	echo "Please install fabric: https://github.com/danielmiessler/fabric"
+	exit 1
 fi
 
 echo -e "${GREEN}✓ fabric is installed${NC}"
 
 # Check if pattern exists in fabric
 if ! fabric -l | grep -q "$PATTERN_NAME"; then
-    echo -e "${YELLOW}Warning: Pattern not found in fabric patterns directory${NC}"
-    echo "Installing pattern temporarily to ~/.config/fabric/patterns/$PATTERN_NAME"
-    mkdir -p ~/.config/fabric/patterns
-    ln -sf "$SCRIPT_DIR" ~/.config/fabric/patterns/
-    PATTERN_INSTALLED_BY_US=true
-    echo -e "${GREEN}✓ Pattern installed (will be removed after tests)${NC}"
+	echo -e "${YELLOW}Warning: Pattern not found in fabric patterns directory${NC}"
+	echo "Installing pattern temporarily to ~/.config/fabric/patterns/$PATTERN_NAME"
+	mkdir -p ~/.config/fabric/patterns
+	ln -sf "$SCRIPT_DIR" ~/.config/fabric/patterns/
+	PATTERN_INSTALLED_BY_US=true
+	echo -e "${GREEN}✓ Pattern installed (will be removed after tests)${NC}"
 else
-    echo -e "${GREEN}✓ Pattern found in fabric${NC}"
+	echo -e "${GREEN}✓ Pattern found in fabric${NC}"
 fi
 
 echo
@@ -64,68 +64,68 @@ echo "============================================"
 echo
 
 if [ -f "$SCRIPT_DIR/test-bad-playbook.yml" ]; then
-    echo -e "${YELLOW}Running review on test-bad-playbook.yml...${NC}"
-    OUTPUT=$(cat "$SCRIPT_DIR/test-bad-playbook.yml" | fabric -p "$PATTERN_NAME" 2>&1 || true)
+	echo -e "${YELLOW}Running review on test-bad-playbook.yml...${NC}"
+	OUTPUT=$(cat "$SCRIPT_DIR/test-bad-playbook.yml" | fabric -p "$PATTERN_NAME" 2>&1 || true)
 
-    # Check for expected issues in output
-    FOUND_ISSUES=0
+	# Check for expected issues in output
+	FOUND_ISSUES=0
 
-    if echo "$OUTPUT" | grep -iq "FQCN\|Fully Qualified"; then
-        echo -e "${GREEN}✓ Detected FQCN issues${NC}"
-        ((FOUND_ISSUES++)) || true
-    else
-        echo -e "${RED}✗ Failed to detect FQCN issues${NC}"
-    fi
+	if echo "$OUTPUT" | grep -iq "FQCN\|Fully Qualified"; then
+		echo -e "${GREEN}✓ Detected FQCN issues${NC}"
+		((FOUND_ISSUES++)) || true
+	else
+		echo -e "${RED}✗ Failed to detect FQCN issues${NC}"
+	fi
 
-    if echo "$OUTPUT" | grep -iq "password\|secret\|credential\|hardcoded"; then
-        echo -e "${GREEN}✓ Detected security/credential issues${NC}"
-        ((FOUND_ISSUES++)) || true
-    else
-        echo -e "${RED}✗ Failed to detect security issues${NC}"
-    fi
+	if echo "$OUTPUT" | grep -iq "password\|secret\|credential\|hardcoded"; then
+		echo -e "${GREEN}✓ Detected security/credential issues${NC}"
+		((FOUND_ISSUES++)) || true
+	else
+		echo -e "${RED}✗ Failed to detect security issues${NC}"
+	fi
 
-    if echo "$OUTPUT" | grep -iq "idempoten\|changed_when\|creates"; then
-        echo -e "${GREEN}✓ Detected idempotency issues${NC}"
-        ((FOUND_ISSUES++)) || true
-    else
-        echo -e "${RED}✗ Failed to detect idempotency issues${NC}"
-    fi
+	if echo "$OUTPUT" | grep -iq "idempoten\|changed_when\|creates"; then
+		echo -e "${GREEN}✓ Detected idempotency issues${NC}"
+		((FOUND_ISSUES++)) || true
+	else
+		echo -e "${RED}✗ Failed to detect idempotency issues${NC}"
+	fi
 
-    if echo "$OUTPUT" | grep -iq "name\|naming\|unnamed"; then
-        echo -e "${GREEN}✓ Detected naming issues${NC}"
-        ((FOUND_ISSUES++)) || true
-    else
-        echo -e "${RED}✗ Failed to detect naming issues${NC}"
-    fi
+	if echo "$OUTPUT" | grep -iq "name\|naming\|unnamed"; then
+		echo -e "${GREEN}✓ Detected naming issues${NC}"
+		((FOUND_ISSUES++)) || true
+	else
+		echo -e "${RED}✗ Failed to detect naming issues${NC}"
+	fi
 
-    if echo "$OUTPUT" | grep -iq "state: latest\|latest"; then
-        echo -e "${GREEN}✓ Detected state:latest anti-pattern${NC}"
-        ((FOUND_ISSUES++)) || true
-    else
-        echo -e "${RED}✗ Failed to detect state:latest issue${NC}"
-    fi
+	if echo "$OUTPUT" | grep -iq "state: latest\|latest"; then
+		echo -e "${GREEN}✓ Detected state:latest anti-pattern${NC}"
+		((FOUND_ISSUES++)) || true
+	else
+		echo -e "${RED}✗ Failed to detect state:latest issue${NC}"
+	fi
 
-    if echo "$OUTPUT" | grep -iq "mode\|0755\|quoted"; then
-        echo -e "${GREEN}✓ Detected mode quoting issues${NC}"
-        ((FOUND_ISSUES++)) || true
-    else
-        echo -e "${RED}✗ Failed to detect mode quoting issues${NC}"
-    fi
+	if echo "$OUTPUT" | grep -iq "mode\|0755\|quoted"; then
+		echo -e "${GREEN}✓ Detected mode quoting issues${NC}"
+		((FOUND_ISSUES++)) || true
+	else
+		echo -e "${RED}✗ Failed to detect mode quoting issues${NC}"
+	fi
 
-    echo
-    echo -e "${BLUE}Found $FOUND_ISSUES issue categories in test-bad-playbook.yml${NC}"
+	echo
+	echo -e "${BLUE}Found $FOUND_ISSUES issue categories in test-bad-playbook.yml${NC}"
 
-    if [ $FOUND_ISSUES -ge 4 ]; then
-        echo -e "${GREEN}✓ Test 1 PASSED: Pattern detected multiple issue types${NC}"
-    else
-        echo -e "${YELLOW}⚠ Test 1 WARNING: Pattern detected fewer issues than expected${NC}"
-    fi
+	if [ $FOUND_ISSUES -ge 4 ]; then
+		echo -e "${GREEN}✓ Test 1 PASSED: Pattern detected multiple issue types${NC}"
+	else
+		echo -e "${YELLOW}⚠ Test 1 WARNING: Pattern detected fewer issues than expected${NC}"
+	fi
 
-    # Save full report
-    cat "$SCRIPT_DIR/test-bad-playbook.yml" | fabric -p "$PATTERN_NAME" > "$SCRIPT_DIR/test-bad-report.md" 2>&1 || true
-    echo -e "${GREEN}Full report saved to: test-bad-report.md${NC}"
+	# Save full report
+	cat "$SCRIPT_DIR/test-bad-playbook.yml" | fabric -p "$PATTERN_NAME" >"$SCRIPT_DIR/test-bad-report.md" 2>&1 || true
+	echo -e "${GREEN}Full report saved to: test-bad-report.md${NC}"
 else
-    echo -e "${RED}✗ test-bad-playbook.yml not found${NC}"
+	echo -e "${RED}✗ test-bad-playbook.yml not found${NC}"
 fi
 
 echo
@@ -137,30 +137,30 @@ echo "============================================"
 echo
 
 if [ -f "$SCRIPT_DIR/test-good-playbook.yml" ]; then
-    echo -e "${YELLOW}Running review on test-good-playbook.yml...${NC}"
-    OUTPUT=$(cat "$SCRIPT_DIR/test-good-playbook.yml" | fabric -p "$PATTERN_NAME" 2>&1 || true)
+	echo -e "${YELLOW}Running review on test-good-playbook.yml...${NC}"
+	OUTPUT=$(cat "$SCRIPT_DIR/test-good-playbook.yml" | fabric -p "$PATTERN_NAME" 2>&1 || true)
 
-    # Check that good code gets fewer critical findings
-    CRITICAL_COUNT=$(echo "$OUTPUT" | grep -c "CRITICAL" || true)
+	# Check that good code gets fewer critical findings
+	CRITICAL_COUNT=$(echo "$OUTPUT" | grep -c "CRITICAL" || true)
 
-    if [ $CRITICAL_COUNT -le 2 ]; then
-        echo -e "${GREEN}✓ Test 2 PASSED: Good playbook has minimal/no critical findings ($CRITICAL_COUNT)${NC}"
-    else
-        echo -e "${YELLOW}⚠ Test 2 WARNING: Good playbook has $CRITICAL_COUNT critical findings${NC}"
-    fi
+	if [ "$CRITICAL_COUNT" -le 2 ]; then
+		echo -e "${GREEN}✓ Test 2 PASSED: Good playbook has minimal/no critical findings ($CRITICAL_COUNT)${NC}"
+	else
+		echo -e "${YELLOW}⚠ Test 2 WARNING: Good playbook has $CRITICAL_COUNT critical findings${NC}"
+	fi
 
-    # Check for positive observations
-    if echo "$OUTPUT" | grep -iq "Positive Observations\|good practice\|well"; then
-        echo -e "${GREEN}✓ Pattern identified positive practices${NC}"
-    else
-        echo -e "${YELLOW}⚠ Pattern may not have identified positive practices${NC}"
-    fi
+	# Check for positive observations
+	if echo "$OUTPUT" | grep -iq "Positive Observations\|good practice\|well"; then
+		echo -e "${GREEN}✓ Pattern identified positive practices${NC}"
+	else
+		echo -e "${YELLOW}⚠ Pattern may not have identified positive practices${NC}"
+	fi
 
-    # Save full report
-    cat "$SCRIPT_DIR/test-good-playbook.yml" | fabric -p "$PATTERN_NAME" > "$SCRIPT_DIR/test-good-report.md" 2>&1 || true
-    echo -e "${GREEN}Full report saved to: test-good-report.md${NC}"
+	# Save full report
+	cat "$SCRIPT_DIR/test-good-playbook.yml" | fabric -p "$PATTERN_NAME" >"$SCRIPT_DIR/test-good-report.md" 2>&1 || true
+	echo -e "${GREEN}Full report saved to: test-good-report.md${NC}"
 else
-    echo -e "${RED}✗ test-good-playbook.yml not found${NC}"
+	echo -e "${RED}✗ test-good-playbook.yml not found${NC}"
 fi
 
 echo
@@ -172,17 +172,17 @@ echo "============================================"
 echo
 
 if [ -f "$SCRIPT_DIR/filter.sh" ]; then
-    # Test that filter is executable
-    if [ -x "$SCRIPT_DIR/filter.sh" ]; then
-        echo -e "${GREEN}✓ filter.sh is executable${NC}"
-    else
-        echo -e "${RED}✗ filter.sh is not executable${NC}"
-        chmod +x "$SCRIPT_DIR/filter.sh"
-        echo -e "${YELLOW}Made filter.sh executable${NC}"
-    fi
+	# Test that filter is executable
+	if [ -x "$SCRIPT_DIR/filter.sh" ]; then
+		echo -e "${GREEN}✓ filter.sh is executable${NC}"
+	else
+		echo -e "${RED}✗ filter.sh is not executable${NC}"
+		chmod +x "$SCRIPT_DIR/filter.sh"
+		echo -e "${YELLOW}Made filter.sh executable${NC}"
+	fi
 
-    # Test filter functionality
-    TEST_INPUT='```markdown
+	# Test filter functionality
+	TEST_INPUT='```markdown
 # Ansible Review Report
 
 ## Critical Issues
@@ -196,27 +196,27 @@ if [ -f "$SCRIPT_DIR/filter.sh" ]; then
 **Severity:** MEDIUM
 ```'
 
-    FILTERED_OUTPUT=$(echo "$TEST_INPUT" | "$SCRIPT_DIR/filter.sh")
+	FILTERED_OUTPUT=$(echo "$TEST_INPUT" | "$SCRIPT_DIR/filter.sh")
 
-    if echo "$FILTERED_OUTPUT" | grep -q "\[No CRITICAL issues\]"; then
-        echo -e "${RED}✗ Filter failed to remove placeholder text${NC}"
-    else
-        echo -e "${GREEN}✓ Filter removes placeholder text${NC}"
-    fi
+	if echo "$FILTERED_OUTPUT" | grep -q "\[No CRITICAL issues\]"; then
+		echo -e "${RED}✗ Filter failed to remove placeholder text${NC}"
+	else
+		echo -e "${GREEN}✓ Filter removes placeholder text${NC}"
+	fi
 
-    if echo "$FILTERED_OUTPUT" | grep -q "^# Ansible Review Report"; then
-        echo -e "${GREEN}✓ Filter preserves markdown headers${NC}"
-    else
-        echo -e "${RED}✗ Filter failed to preserve markdown headers${NC}"
-    fi
+	if echo "$FILTERED_OUTPUT" | grep -q "^# Ansible Review Report"; then
+		echo -e "${GREEN}✓ Filter preserves markdown headers${NC}"
+	else
+		echo -e "${RED}✗ Filter failed to preserve markdown headers${NC}"
+	fi
 
-    if echo "$FILTERED_OUTPUT" | grep -q "### Use FQCN"; then
-        echo -e "${GREEN}✓ Filter preserves actual content${NC}"
-    else
-        echo -e "${RED}✗ Filter failed to preserve actual content${NC}"
-    fi
+	if echo "$FILTERED_OUTPUT" | grep -q "### Use FQCN"; then
+		echo -e "${GREEN}✓ Filter preserves actual content${NC}"
+	else
+		echo -e "${RED}✗ Filter failed to preserve actual content${NC}"
+	fi
 else
-    echo -e "${RED}✗ filter.sh not found${NC}"
+	echo -e "${RED}✗ filter.sh not found${NC}"
 fi
 
 echo

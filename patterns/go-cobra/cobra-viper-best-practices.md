@@ -31,6 +31,7 @@ APPNAME COMMAND ARG --FLAG
 ```
 
 **Good Examples:**
+
 ```bash
 git clone URL --depth 1
 kubectl get pods --namespace kube-system
@@ -39,6 +40,7 @@ myapp deploy production --dry-run
 ```
 
 **Bad Examples:**
+
 ```bash
 myapp --deploy production           # Flag instead of command
 myapp production-deploy             # Hyphenated compound
@@ -94,6 +96,7 @@ myapp/
 ### Minimal main.go
 
 **Good:**
+
 ```go
 package main
 
@@ -111,6 +114,7 @@ func main() {
 ```
 
 **Bad:**
+
 ```go
 package main
 
@@ -162,6 +166,7 @@ var exampleCmd = &cobra.Command{
 ### RunE vs Run
 
 **Good - RunE:**
+
 ```go
 RunE: func(cmd *cobra.Command, args []string) error {
     if err := doSomething(); err != nil {
@@ -172,6 +177,7 @@ RunE: func(cmd *cobra.Command, args []string) error {
 ```
 
 **Bad - Run:**
+
 ```go
 Run: func(cmd *cobra.Command, args []string) {
     doSomething()  // Errors are swallowed
@@ -181,6 +187,7 @@ Run: func(cmd *cobra.Command, args []string) {
 ### Argument Validation
 
 **Built-in validators:**
+
 ```go
 Args: cobra.NoArgs              // No arguments allowed
 Args: cobra.ExactArgs(2)        // Exactly 2 arguments
@@ -191,6 +198,7 @@ Args: cobra.OnlyValidArgs       // Only from ValidArgs list
 ```
 
 **Custom validation:**
+
 ```go
 Args: func(cmd *cobra.Command, args []string) error {
     if len(args) < 1 {
@@ -206,6 +214,7 @@ Args: func(cmd *cobra.Command, args []string) error {
 ### Command Lifecycle Hooks
 
 Execution order:
+
 1. `PersistentPreRun` (inherited by children)
 2. `PreRun`
 3. `Run` / `RunE`
@@ -213,6 +222,7 @@ Execution order:
 5. `PersistentPostRun` (inherited by children)
 
 **Good - Use PersistentPreRunE for initialization:**
+
 ```go
 var rootCmd = &cobra.Command{
     Use:   "myapp",
@@ -321,6 +331,7 @@ func init() {
 | Global viper singleton | MEDIUM | Avoid |
 
 **Good - Explicit instance:**
+
 ```go
 func NewConfig() (*Config, error) {
     v := viper.New()
@@ -331,6 +342,7 @@ func NewConfig() (*Config, error) {
 ```
 
 **Bad - Global singleton:**
+
 ```go
 func init() {
     viper.SetConfigName("config")  // Hard to test
@@ -504,6 +516,7 @@ func initConfig() {
 ### Reading Values in Commands
 
 **Good - Read from Viper:**
+
 ```go
 func runServe(cmd *cobra.Command, args []string) error {
     // Read from Viper (respects precedence: flag > env > file > default)
@@ -515,6 +528,7 @@ func runServe(cmd *cobra.Command, args []string) error {
 ```
 
 **Bad - Read directly from flags:**
+
 ```go
 func runServe(cmd *cobra.Command, args []string) error {
     // Bypasses precedence - ignores env vars and config file
@@ -556,11 +570,13 @@ func init() {
 ### Actionable Error Messages
 
 **Good:**
+
 ```go
 return fmt.Errorf("config file not found at %s (create one or use --config)", path)
 ```
 
 **Bad:**
+
 ```go
 return errors.New("config not found")
 ```
@@ -909,6 +925,7 @@ func initLogger(v *viper.Viper) *slog.Logger {
 ### Anti-Pattern Examples
 
 **Bad - Complex main.go:**
+
 ```go
 func main() {
     initLogging()      // Don't do setup here
@@ -919,6 +936,7 @@ func main() {
 ```
 
 **Good - Minimal main.go:**
+
 ```go
 func main() {
     if err := cmd.Execute(); err != nil {
@@ -928,6 +946,7 @@ func main() {
 ```
 
 **Bad - Flags bypass config:**
+
 ```go
 func runServe(cmd *cobra.Command, args []string) error {
     port, _ := cmd.Flags().GetInt("port")  // Ignores env/config
@@ -935,6 +954,7 @@ func runServe(cmd *cobra.Command, args []string) error {
 ```
 
 **Good - Use Viper:**
+
 ```go
 func runServe(cmd *cobra.Command, args []string) error {
     port := v.GetInt("server.port")  // Respects precedence
@@ -948,6 +968,7 @@ func runServe(cmd *cobra.Command, args []string) error {
 ### CRITICAL
 
 Issues that affect correctness, security, or cause crashes:
+
 - Using Run instead of RunE with important error handling
 - Missing argument validation that could cause panics
 - Secrets stored in config files
@@ -956,6 +977,7 @@ Issues that affect correctness, security, or cause crashes:
 ### HIGH
 
 Significant issues affecting reliability or maintainability:
+
 - Reading flags directly instead of using Viper
 - Business logic in cmd/ package
 - Global Viper singleton
@@ -965,6 +987,7 @@ Significant issues affecting reliability or maintainability:
 ### MEDIUM
 
 Best practice violations:
+
 - Missing shell completions
 - Missing version command
 - Complex main.go
@@ -974,6 +997,7 @@ Best practice violations:
 ### LOW
 
 Minor improvements:
+
 - Missing command aliases
 - Missing Long descriptions
 - Missing Example in commands
@@ -982,6 +1006,7 @@ Minor improvements:
 ### INFO
 
 Suggestions for optimization:
+
 - Live config reload
 - Dynamic completions
 - Structured logging integration

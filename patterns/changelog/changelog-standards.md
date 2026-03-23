@@ -74,6 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ```
 
 Components:
+
 - `X.Y.Z` - Semantic version number
 - `YYYY-MM-DD` - ISO 8601 date format
 - Square brackets for linkability
@@ -98,31 +99,37 @@ Use these categories in this order:
 ### Category Guidelines
 
 **Added:**
+
 - New features, capabilities, or functionality
 - New modules, commands, or API endpoints
 - New configuration options
 
 **Changed:**
+
 - Modifications to existing functionality
 - Updated dependencies (major versions)
 - Changed default behaviors
 - Renamed items
 
 **Deprecated:**
+
 - Features that will be removed in future versions
 - Include migration path when possible
 - Specify target removal version if known
 
 **Removed:**
+
 - Features that have been removed
 - Only use after deprecation period (when possible)
 
 **Fixed:**
+
 - Bug corrections
 - Error handling improvements
 - Performance fixes
 
 **Security:**
+
 - Security vulnerability fixes
 - Authentication/authorization fixes
 - Data protection improvements
@@ -135,6 +142,7 @@ Use these categories in this order:
 ### Entry Format
 
 **Good entries:**
+
 ```markdown
 - Added `--verbose` flag to enable detailed output (#123)
 - Fixed crash when processing empty files
@@ -143,6 +151,7 @@ Use these categories in this order:
 ```
 
 **Bad entries:**
+
 ```markdown
 - Fixed bug  # Too vague
 - Various improvements  # Not specific
@@ -163,6 +172,7 @@ Use these categories in this order:
 ### What to Include
 
 **Include:**
+
 - User-facing changes
 - API changes
 - Breaking changes
@@ -171,6 +181,7 @@ Use these categories in this order:
 - Deprecation notices
 
 **Exclude:**
+
 - Internal refactoring (unless affecting performance)
 - Development tooling changes
 - Minor dependency updates
@@ -317,6 +328,7 @@ fixed:
 ```
 
 **Rules for antsibull-changelog:**
+
 - `release_summary` is a single string, not a list
 - All other categories are lists of strings
 - Prefix changes with module/role/plugin name

@@ -6,10 +6,11 @@ This Ansible codebase demonstrates strong adherence to modern best practices, in
 
 ### Use `ansible.builtin.include_vars` Loop Idiomatically
 
-**Severity:** LOW  
+**Severity:** LOW
 **Category:** Task Quality / Variable Management
 
 **Current:**
+
 ```yaml
 - name: Load OS-specific variables
   ansible.builtin.include_vars: "{{ item }}"
@@ -24,6 +25,7 @@ This Ansible codebase demonstrates strong adherence to modern best practices, in
 ```
 
 **Suggested:**
+
 ```yaml
 - name: Load OS-specific variables
   ansible.builtin.include_vars:
@@ -39,17 +41,18 @@ This Ansible codebase demonstrates strong adherence to modern best practices, in
         - vars
 ```
 
-**Why:**  
+**Why:**
 Using the `lookup('first_found', ...)` pattern is more idiomatic and explicit than looping with `with_first_found`. This approach improves readability, aligns with the latest Ansible idioms, and better supports static analysis tools (see ansible-standards.md: Variable Management, Task Quality).
 
 ---
 
 ### Remove Unnecessary `check_mode: false` from Informational Task
 
-**Severity:** LOW  
+**Severity:** LOW
 **Category:** Task Quality
 
 **Current:**
+
 ```yaml
 - name: Check nginx version
   ansible.builtin.command: nginx -v
@@ -59,6 +62,7 @@ Using the `lookup('first_found', ...)` pattern is more idiomatic and explicit th
 ```
 
 **Suggested:**
+
 ```yaml
 - name: Check nginx version
   ansible.builtin.command: nginx -v
@@ -66,27 +70,29 @@ Using the `lookup('first_found', ...)` pattern is more idiomatic and explicit th
   changed_when: false
 ```
 
-**Why:**  
+**Why:**
 Explicitly disabling check mode (`check_mode: false`) is rarely necessary for read-only commands, especially when `changed_when: false` is used. Removing it signals intent more clearly and lets Ansible manage check mode appropriately (see ansible-standards.md: Task Quality, Idempotency).
 
 ---
 
 ### Consistent Use of Fact Variable Names
 
-**Severity:** LOW  
+**Severity:** LOW
 **Category:** Variable Management
 
 **Current:**
+
 ```yaml
 when: ansible_facts['os_family'] == 'Debian'
 ```
 
 **Suggested:**
+
 ```yaml
 when: ansible_facts.os_family == 'Debian'
 ```
 
-**Why:**  
+**Why:**
 Using dot notation for fact variables is the preferred style as per Ansible standards, improving readability and consistency throughout the codebase (see ansible-standards.md: Variable Management).
 
 ---

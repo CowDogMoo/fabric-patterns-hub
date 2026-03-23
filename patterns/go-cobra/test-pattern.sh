@@ -12,10 +12,10 @@ echo "Testing go-cobra pattern..."
 echo "==========================="
 
 # Check if fabric is available
-if ! command -v fabric &> /dev/null; then
-    echo "Error: fabric is not installed or not in PATH"
-    echo "Install with: pip install fabric-ai"
-    exit 1
+if ! command -v fabric &>/dev/null; then
+	echo "Error: fabric is not installed or not in PATH"
+	echo "Install with: pip install fabric-ai"
+	exit 1
 fi
 
 # Run the pattern
@@ -24,7 +24,7 @@ OUTPUT=$(cat "$TEST_FILE" | fabric --pattern go-cobra 2>&1) || true
 
 # Apply filter if it exists
 if [ -f "$SCRIPT_DIR/filter.sh" ]; then
-    OUTPUT=$(echo "$OUTPUT" | "$SCRIPT_DIR/filter.sh")
+	OUTPUT=$(echo "$OUTPUT" | "$SCRIPT_DIR/filter.sh")
 fi
 
 echo ""
@@ -40,14 +40,14 @@ CHECKS_PASSED=0
 CHECKS_FAILED=0
 
 check_section() {
-    local section="$1"
-    if echo "$OUTPUT" | grep -q "$section"; then
-        echo "  [PASS] Found: $section"
-        ((CHECKS_PASSED++))
-    else
-        echo "  [FAIL] Missing: $section"
-        ((CHECKS_FAILED++))
-    fi
+	local section="$1"
+	if echo "$OUTPUT" | grep -q "$section"; then
+		echo "  [PASS] Found: $section"
+		((CHECKS_PASSED++))
+	else
+		echo "  [FAIL] Missing: $section"
+		((CHECKS_FAILED++))
+	fi
 }
 
 # Check for expected sections
@@ -62,14 +62,14 @@ echo ""
 echo "Checking issue detection..."
 
 check_issue() {
-    local issue="$1"
-    if echo "$OUTPUT" | grep -qi "$issue"; then
-        echo "  [PASS] Detected: $issue"
-        ((CHECKS_PASSED++))
-    else
-        echo "  [WARN] Not detected: $issue"
-        # Don't fail for issue detection - LLM output can vary
-    fi
+	local issue="$1"
+	if echo "$OUTPUT" | grep -qi "$issue"; then
+		echo "  [PASS] Detected: $issue"
+		((CHECKS_PASSED++))
+	else
+		echo "  [WARN] Not detected: $issue"
+		# Don't fail for issue detection - LLM output can vary
+	fi
 }
 
 # These issues should be detected
@@ -85,11 +85,11 @@ echo "Checks passed: $CHECKS_PASSED"
 echo "Checks failed: $CHECKS_FAILED"
 
 if [ "$CHECKS_FAILED" -gt 0 ]; then
-    echo ""
-    echo "Some structural checks failed. Review the output above."
-    exit 1
+	echo ""
+	echo "Some structural checks failed. Review the output above."
+	exit 1
 else
-    echo ""
-    echo "All structural checks passed!"
-    exit 0
+	echo ""
+	echo "All structural checks passed!"
+	exit 0
 fi

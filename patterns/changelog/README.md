@@ -5,6 +5,7 @@ A comprehensive fabric pattern for generating structured changelog entries from 
 ## Pattern Structure
 
 This pattern includes:
+
 - **`system.md`** - The changelog generation framework and prompt engineering for LLM
 - **`changelog-standards.md`** - Comprehensive reference document with changelog standards (source of truth)
 - **`filter.sh`** - Post-processing to clean up output formatting
@@ -17,6 +18,7 @@ The pattern is designed with **separation of concerns**: the `changelog-standard
 ## Purpose
 
 This pattern helps you:
+
 - **Generate changelog entries** from git commits
 - **Categorize changes** properly (Added, Changed, Fixed, etc.)
 - **Write user-focused** descriptions
@@ -175,12 +177,14 @@ Note: Internal changes (chore, docs, refactor) are omitted as they're not user-f
 ### When to Use This Pattern
 
 **Good use cases:**
+
 - Generating release notes from commits
 - Creating changelog fragments for PRs
 - Maintaining consistent changelog format
 - Automating release documentation
 
 **Not ideal for:**
+
 - Generating full release announcements (need more context)
 - Initial changelog setup (create structure manually)
 
@@ -216,6 +220,7 @@ Edit the `# OUTPUT FORMAT` section in `system.md` to customize the changelog str
 ### Issue: Too many entries
 
 **Solution:** Filter commits before passing to pattern:
+
 ```bash
 git log --grep="feat\|fix" --oneline | fabric --pattern changelog
 ```
@@ -223,6 +228,7 @@ git log --grep="feat\|fix" --oneline | fabric --pattern changelog
 ### Issue: Missing context
 
 **Solution:** Include more commit details:
+
 ```bash
 git log --pretty=format:"%s%n%b" | fabric --pattern changelog
 ```
