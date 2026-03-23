@@ -83,7 +83,7 @@ def process_items(items):
 def get_squares(numbers):
     squares = []
     for n in numbers:
-        squares.append(n ** 2)
+        squares.append(n**2)
     return squares
 
 

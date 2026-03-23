@@ -3,6 +3,7 @@
 This module contains a Calculator class and utility functions for
 performing various mathematical calculations.
 """
+
 import math
 from typing import List, Optional
 

@@ -147,7 +147,7 @@ def get_squares(numbers: list[int]) -> list[int]:
     Returns:
         A list of squared numbers.
     """
-    return [n ** 2 for n in numbers]
+    return [n**2 for n in numbers]
 
 
 def process_data() -> Any | None:
