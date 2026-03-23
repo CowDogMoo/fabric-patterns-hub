@@ -20,7 +20,7 @@ fi
 
 # Run the pattern
 echo "Running pattern against test-cli-issues.go..."
-OUTPUT=$(cat "$TEST_FILE" | fabric --pattern go-cobra 2>&1) || true
+OUTPUT=$(fabric --pattern go-cobra <"$TEST_FILE" 2>&1) || true
 
 # Apply filter if it exists
 if [ -f "$SCRIPT_DIR/filter.sh" ]; then

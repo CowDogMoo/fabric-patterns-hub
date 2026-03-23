@@ -34,7 +34,7 @@ echo ""
 echo "Running pattern against test-code.py..."
 echo ""
 
-cat "$TEST_INPUT" | fabric --pattern python-tests >"$TEST_OUTPUT" 2>&1
+fabric --pattern python-tests <"$TEST_INPUT" >"$TEST_OUTPUT" 2>&1
 
 # Check if output was generated
 if [[ ! -s "$TEST_OUTPUT" ]]; then

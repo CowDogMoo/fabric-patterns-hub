@@ -50,7 +50,7 @@ echo
 
 if [ -f "$SCRIPT_DIR/test-vulnerable.go" ]; then
 	echo -e "${YELLOW}Running audit on test-vulnerable.go...${NC}"
-	OUTPUT=$(cat "$SCRIPT_DIR/test-vulnerable.go" | fabric -p "$PATTERN_NAME" 2>&1 || true)
+	OUTPUT=$(fabric -p "$PATTERN_NAME" <"$SCRIPT_DIR/test-vulnerable.go" 2>&1 || true)
 
 	# Check for expected vulnerability types in output
 	FOUND_ISSUES=0
@@ -114,7 +114,7 @@ if [ -f "$SCRIPT_DIR/test-vulnerable.go" ]; then
 	fi
 
 	# Save full report
-	cat "$SCRIPT_DIR/test-vulnerable.go" | fabric -p "$PATTERN_NAME" >"$SCRIPT_DIR/test-vulnerable-report.md" 2>&1 || true
+	fabric -p "$PATTERN_NAME" <"$SCRIPT_DIR/test-vulnerable.go" >"$SCRIPT_DIR/test-vulnerable-report.md" 2>&1 || true
 	echo -e "${GREEN}Full report saved to: test-vulnerable-report.md${NC}"
 else
 	echo -e "${RED}✗ test-vulnerable.go not found${NC}"
@@ -130,7 +130,7 @@ echo
 
 if [ -f "$SCRIPT_DIR/test-secure.go" ]; then
 	echo -e "${YELLOW}Running audit on test-secure.go...${NC}"
-	OUTPUT=$(cat "$SCRIPT_DIR/test-secure.go" | fabric -p "$PATTERN_NAME" 2>&1 || true)
+	OUTPUT=$(fabric -p "$PATTERN_NAME" <"$SCRIPT_DIR/test-secure.go" 2>&1 || true)
 
 	# Check that secure code gets fewer critical findings
 	CRITICAL_COUNT=$(echo "$OUTPUT" | grep -c "CRITICAL" || true)
@@ -142,7 +142,7 @@ if [ -f "$SCRIPT_DIR/test-secure.go" ]; then
 	fi
 
 	# Save full report
-	cat "$SCRIPT_DIR/test-secure.go" | fabric -p "$PATTERN_NAME" >"$SCRIPT_DIR/test-secure-report.md" 2>&1 || true
+	fabric -p "$PATTERN_NAME" <"$SCRIPT_DIR/test-secure.go" >"$SCRIPT_DIR/test-secure-report.md" 2>&1 || true
 	echo -e "${GREEN}Full report saved to: test-secure-report.md${NC}"
 else
 	echo -e "${RED}✗ test-secure.go not found${NC}"

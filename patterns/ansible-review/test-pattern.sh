@@ -65,7 +65,7 @@ echo
 
 if [ -f "$SCRIPT_DIR/test-bad-playbook.yml" ]; then
 	echo -e "${YELLOW}Running review on test-bad-playbook.yml...${NC}"
-	OUTPUT=$(cat "$SCRIPT_DIR/test-bad-playbook.yml" | fabric -p "$PATTERN_NAME" 2>&1 || true)
+	OUTPUT=$(fabric -p "$PATTERN_NAME" <"$SCRIPT_DIR/test-bad-playbook.yml" 2>&1 || true)
 
 	# Check for expected issues in output
 	FOUND_ISSUES=0
@@ -122,7 +122,7 @@ if [ -f "$SCRIPT_DIR/test-bad-playbook.yml" ]; then
 	fi
 
 	# Save full report
-	cat "$SCRIPT_DIR/test-bad-playbook.yml" | fabric -p "$PATTERN_NAME" >"$SCRIPT_DIR/test-bad-report.md" 2>&1 || true
+	fabric -p "$PATTERN_NAME" <"$SCRIPT_DIR/test-bad-playbook.yml" >"$SCRIPT_DIR/test-bad-report.md" 2>&1 || true
 	echo -e "${GREEN}Full report saved to: test-bad-report.md${NC}"
 else
 	echo -e "${RED}✗ test-bad-playbook.yml not found${NC}"
@@ -138,7 +138,7 @@ echo
 
 if [ -f "$SCRIPT_DIR/test-good-playbook.yml" ]; then
 	echo -e "${YELLOW}Running review on test-good-playbook.yml...${NC}"
-	OUTPUT=$(cat "$SCRIPT_DIR/test-good-playbook.yml" | fabric -p "$PATTERN_NAME" 2>&1 || true)
+	OUTPUT=$(fabric -p "$PATTERN_NAME" <"$SCRIPT_DIR/test-good-playbook.yml" 2>&1 || true)
 
 	# Check that good code gets fewer critical findings
 	CRITICAL_COUNT=$(echo "$OUTPUT" | grep -c "CRITICAL" || true)
@@ -157,7 +157,7 @@ if [ -f "$SCRIPT_DIR/test-good-playbook.yml" ]; then
 	fi
 
 	# Save full report
-	cat "$SCRIPT_DIR/test-good-playbook.yml" | fabric -p "$PATTERN_NAME" >"$SCRIPT_DIR/test-good-report.md" 2>&1 || true
+	fabric -p "$PATTERN_NAME" <"$SCRIPT_DIR/test-good-playbook.yml" >"$SCRIPT_DIR/test-good-report.md" 2>&1 || true
 	echo -e "${GREEN}Full report saved to: test-good-report.md${NC}"
 else
 	echo -e "${RED}✗ test-good-playbook.yml not found${NC}"

@@ -35,7 +35,7 @@ echo ""
 echo "Running changelog generation on sample commits..."
 echo ""
 
-if cat "$TEST_INPUT" | fabric --pattern "$PATTERN_DIR" >"$OUTPUT_FILE" 2>&1; then
+if fabric --pattern "$PATTERN_DIR" <"$TEST_INPUT" >"$OUTPUT_FILE" 2>&1; then
 	echo "Pattern executed successfully"
 	echo ""
 	echo "Output generated at: $OUTPUT_FILE"

@@ -35,7 +35,7 @@ echo ""
 echo "📊 Running audit on test dashboard..."
 echo ""
 
-if cat "$TEST_DASHBOARD" | fabric --pattern "$PATTERN_DIR" >"$OUTPUT_REPORT" 2>&1; then
+if fabric --pattern "$PATTERN_DIR" <"$TEST_DASHBOARD" >"$OUTPUT_REPORT" 2>&1; then
 	echo "✅ Pattern executed successfully"
 	echo ""
 	echo "📄 Report generated at: $OUTPUT_REPORT"
