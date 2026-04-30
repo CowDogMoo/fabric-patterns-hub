@@ -48,6 +48,20 @@ class TestStripWrappingFences:
     def test_empty_input(self):
         assert strip_wrapping_fences("") == ""
 
+    def test_removes_doubled_fences(self):
+        """Models sometimes double-wrap output; strip both layers."""
+        text = "```\n```\nfeat: thing\n```\n```"
+        assert strip_wrapping_fences(text) == "feat: thing"
+
+    def test_removes_fence_with_blank_padding(self):
+        """Tolerate blank lines between the wrapping fences and content."""
+        text = "```\n\nfeat: thing\n\n```"
+        assert strip_wrapping_fences(text) == "\nfeat: thing\n"
+
+    def test_doubled_fences_with_language_tag(self):
+        text = "```markdown\n```\ncontent\n```\n```"
+        assert strip_wrapping_fences(text) == "content"
+
 
 class TestStripLeadingTrailingBlanks:
     def test_strips_leading(self):
@@ -296,6 +310,18 @@ class TestMergeSections:
         assert "**Key Changes:**" in result
         assert "**Added:**" in result
 
+    def test_blank_between_preamble_and_first_section(self):
+        """Preamble content and the first section must have a blank line between them."""
+        text = "fix: bug\n\nSummary line.\n\n**Changed:**\n- Did a thing"
+        result = merge_sections(text, ["Added", "Changed", "Removed"])
+        lines = result.split("\n")
+        # title, blank, preamble, blank, **Changed:**, blank, content
+        assert lines[0] == "fix: bug"
+        assert lines[1] == ""
+        assert lines[2] == "Summary line."
+        assert lines[3] == ""
+        assert lines[4] == "**Changed:**"
+
 
 class TestFilterTextIntegration:
     """End-to-end tests for the full filter pipeline."""
@@ -457,6 +483,32 @@ class TestFilterTextIntegration:
         lines = result.split("\n")
         assert lines[0] == "feat: add GitHub Actions workflows"
         assert lines[1] == "**Key Changes:**"
+
+    def test_doubled_fence_with_preamble_regression(self):
+        """Regression: doubled fences + preamble before sections produced a `` ` `` title
+        and jammed preamble against the first section header (commit df9e2be)."""
+        text = (
+            "```\n"
+            "```\n"
+            "fix: update attack operation id filtering\n"
+            "**Changed:**\n"
+            "- Refined Prometheus query\n"
+            "- Modified Tempo query\n"
+            "```\n"
+            "```"
+        )
+        result = filter_text(
+            text,
+            section_names=["Added", "Changed", "Removed"],
+            max_blanks=2,
+        )
+        assert "```" not in result
+        lines = result.split("\n")
+        assert lines[0] == "fix: update attack operation id filtering"
+        assert lines[1] == ""
+        assert lines[2] == "**Changed:**"
+        assert "Refined Prometheus query" in result
+        assert "Modified Tempo query" in result
 
     def test_no_trailing_whitespace_in_output(self):
         text = "# Review   \n\nContent here   \n\nMore content  "

@@ -21,12 +21,27 @@ import sys
 
 
 def strip_wrapping_fences(text: str) -> str:
-    """Remove code fences that wrap the entire output, preserving internal ones."""
-    lines = text.split("\n")
-    # Only strip if the first line is a fence opener and the last is a closer
-    if len(lines) >= 2 and re.match(r"^```\w*$", lines[0]) and lines[-1].strip() == "```":
-        lines = lines[1:-1]
-    return "\n".join(lines)
+    """Remove code fences that wrap the entire output, preserving internal ones.
+
+    Loops to handle models that double-wrap (emit two opening/closing fences)
+    and tolerates blank lines between the fence and the content.
+    """
+    while True:
+        lines = text.split("\n")
+        # Find first and last non-blank lines
+        first_idx = next((i for i, ln in enumerate(lines) if ln.strip()), None)
+        last_idx = next(
+            (len(lines) - 1 - i for i, ln in enumerate(reversed(lines)) if ln.strip()),
+            None,
+        )
+        if first_idx is None or last_idx is None or first_idx >= last_idx:
+            return text
+        if re.match(r"^```\w*$", lines[first_idx].strip()) and lines[last_idx].strip() == "```":
+            del lines[last_idx]
+            del lines[first_idx]
+            text = "\n".join(lines)
+            continue
+        return text
 
 
 def strip_leading_trailing_blanks(text: str) -> str:
@@ -224,13 +239,10 @@ def merge_sections(text: str, section_names: list[str]) -> str:
         parts.append(other_text)
 
     # Sections with content
-    first_section = True
     for name in section_names:
         content = "\n".join(sections[name]).strip()
         if content:
-            if not first_section:
-                parts.append("")
-            first_section = False
+            parts.append("")
             parts.append(f"**{name}:**")
             parts.append("")
             parts.append(content)
