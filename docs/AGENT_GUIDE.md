@@ -30,14 +30,14 @@ agent workflow.
 - ansible-review
 - go-cobra
 - go-taskfile
+- go-doc-comments
+- python-doc-comments
 
 ### Pattern-preferred
 - commit
 - pr
 - changelog
 - readme
-- go-doc-comments
-- python-doc-comments
 
 ### Depends
 - grafana-dashboard-audit: audit = pattern; remediation = agent
