@@ -11,12 +11,14 @@ the agent definition.
 ## Quick Rubric
 
 ### Use a PATTERN when
+
 - The input is self-contained (single file or text blob).
 - The output is pure text and does not require repo changes.
 - No tool runs are needed (tests, formatters, linters, scanners).
 - The task does not benefit from exploring related files or context.
 
 ### Use an AGENT when
+
 - The best result depends on repo context (multiple files, configs, conventions).
 - The task should run tools (tests, linters, formatters, security scanners).
 - The task modifies files or applies fixes.
@@ -24,6 +26,7 @@ the agent definition.
 - See [cowdogmoo/squad](https://github.com/CowDogMoo/squad) for the agent catalog.
 
 ### Use a SKILL when
+
 - A built-in harness capability already covers the task (`/verify`,
   `/code-review`, `/security-review`, `/init`, etc.).
 - The work is a focused side-task you want to run inside the current
@@ -36,6 +39,7 @@ the agent definition.
 ## Pattern Classification in This Repo
 
 ### Agent-preferred
+
 - go-refactor
 - python-refactor
 - go-tests
@@ -50,12 +54,14 @@ the agent definition.
 - python-doc-comments
 
 ### Pattern-preferred
+
 - commit
 - pr
 - changelog
 - readme
 
 ### Depends
+
 - grafana-dashboard-audit: audit = pattern; remediation = agent
 
 ## Tips
