@@ -367,6 +367,7 @@ consistent formatting.
 ### Purpose
 
 LLMs often add unwanted elements:
+
 - Markdown code fences wrapping the entire output
 - Placeholder text for empty sections ("No changes removed")
 - Introductory phrases ("Here is the changelog:")
@@ -588,6 +589,7 @@ Pattern-specific README files document usage and provide examples.
 ### When to Include
 
 Include a README when:
+
 - The pattern has non-obvious usage
 - Multiple input formats are supported
 - Examples would help users understand output
@@ -624,6 +626,7 @@ cat myfile.go | fabric --pattern go-tests
 ## Output
 
 The pattern generates:
+
 - Complete test file with package declaration
 - Test functions for exported functions/methods
 - Test summary with coverage areas
@@ -633,6 +636,7 @@ The pattern generates:
 - Provide complete function signatures for better tests
 - Include error-returning functions for comprehensive coverage
 - Review generated tests before using in production
+
 ```
 
 ---
@@ -645,12 +649,16 @@ Name specific functions, files, and line numbers. Avoid vague language.
 
 **Good:**
 ```
+
 Fixed crash in ParseURL() when input contains empty scheme (parser.go:45)
+
 ```
 
 **Bad:**
 ```
+
 Fixed a bug in the parser
+
 ```
 
 ### Actionability
@@ -667,6 +675,7 @@ go test ./...
 ```
 
 **Bad:**
+
 ```
 Install the dependencies and run the tests.
 ```
@@ -686,11 +695,13 @@ Use **CRITICAL** markers to prevent placeholder text:
 Write for users consuming the output, not developers reading the code.
 
 **Good:**
+
 ```
 Added --verbose flag to enable detailed logging during sync operations
 ```
 
 **Bad:**
+
 ```
 Added verbose boolean parameter to SyncOptions struct
 ```
@@ -744,6 +755,7 @@ System.md only. Suitable for simple patterns with straightforward output.
 **Examples:** `commit`, `pr`
 
 **Contents:**
+
 ```
 pattern-name/
 └── system.md
@@ -756,6 +768,7 @@ Adds filter script and README. Recommended for most patterns.
 **Examples:** `changelog`, `readme`
 
 **Contents:**
+
 ```
 pattern-name/
 ├── system.md
@@ -770,6 +783,7 @@ Full suite with knowledge base and testing. Required for complex domains.
 **Examples:** `go-security-audit`, `go-tests`, `grafana-dashboard-audit`
 
 **Contents:**
+
 ```
 pattern-name/
 ├── system.md
@@ -843,6 +857,7 @@ Reference the <topic>-standards.md for detailed guidelines. Brief overview:
 # INPUT
 
 [Description of what user should provide]:
+
 ```
 
 ### filter.sh Template
@@ -1026,6 +1041,7 @@ This document serves as the knowledge base for the [pattern-name] pattern.
 ---
 
 *Last updated: YYYY-MM-DD*
+
 ```
 
 ---

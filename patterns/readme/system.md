@@ -52,7 +52,7 @@ Reference the readme-standards.md for detailed templates. Brief overview:
 - Add blank lines between sections for readability
 - Use tables for structured data (features, configuration options)
 - Include badges at the top if appropriate (build status, version, license)
-- Make all code blocks language-specific (```bash, ```go, ```python, etc.)
+- Make all code blocks language-specific (```bash,```go, ```python, etc.)
 - End with a license section
 - Keep line length reasonable (80-120 characters for prose)
 - Use relative links for internal documentation

@@ -5,6 +5,7 @@ A comprehensive fabric pattern for auditing Grafana dashboard JSON files against
 ## Pattern Structure
 
 This pattern includes:
+
 - **`system.md`** - The audit framework and prompt engineering for LLM
 - **`best-practices.md`** - Comprehensive reference document with detailed criteria (source of truth)
 - **`filter.sh`** - Post-processing to clean up output formatting
@@ -17,6 +18,7 @@ The pattern is designed with **separation of concerns**: the `best-practices.md`
 ## Purpose
 
 This pattern helps you:
+
 - **Audit dashboard quality** against established best practices
 - **Identify issues** across multiple categories (design, accessibility, performance, etc.)
 - **Generate reports** with severity-based findings and remediation roadmaps
@@ -162,12 +164,14 @@ echo "✅ Dashboard quality check passed"
 The pattern generates a comprehensive markdown report with:
 
 ### Executive Summary
+
 - Dashboard metadata (title, UID, panel count, variables)
 - Maturity score (0-100)
 - Methodology detection
 - Overall assessment
 
 ### Findings by Severity
+
 - 🔴 Critical Issues - Must fix (broken functionality, misleading data)
 - 🟠 High Priority - Should fix (usability, accessibility, performance)
 - 🟡 Medium Priority - Important (best practices, consistency)
@@ -175,21 +179,25 @@ The pattern generates a comprehensive markdown report with:
 - ℹ️ Informational - Suggestions (optimization, enhancements)
 
 ### Strengths
+
 - Positive aspects already implemented
 - Best practices in use
 
 ### Maturity Assessment
+
 - Current level (Low/Medium/High)
 - Characteristics of current level
 - Path to next level
 
 ### Prioritized Remediation Roadmap
+
 - Phase 1: Critical Fixes (Do First)
 - Phase 2: High Impact Improvements (Do Next)
 - Phase 3: Quality Enhancements (Do When Time Permits)
 - Phase 4: Optimization (Nice to Have)
 
 ### Detailed Technical Analysis
+
 - Panel-by-panel breakdown
 - Variable analysis
 - Query performance insights
@@ -248,6 +256,7 @@ payment-api, and notification-api. Use queries like:
 ### When to Use This Pattern
 
 ✅ **Good use cases:**
+
 - Pre-deployment dashboard quality checks
 - Regular dashboard audits (quarterly/monthly)
 - Onboarding new dashboards to production
@@ -256,6 +265,7 @@ payment-api, and notification-api. Use queries like:
 - Training teams on dashboard best practices
 
 ❌ **Not ideal for:**
+
 - Real-time dashboard debugging (use Grafana UI)
 - Complex dashboard transformations (use agent instead)
 - Interactive remediation (use agent instead)
@@ -270,6 +280,7 @@ The output of this pattern is designed to be consumed by a Grafana agent:
 4. **Re-audit** to verify improvements
 
 Example workflow:
+
 ```bash
 # Step 1: Generate audit
 cat dashboard.json | fabric --pattern grafana-dashboard-audit > audit.md
@@ -299,6 +310,7 @@ To add or modify audit criteria, edit the `best-practices.md` file:
 The pattern automatically incorporates any changes you make to `best-practices.md`.
 
 Example additions:
+
 ```markdown
 ## Company-Specific Standards
 
@@ -339,6 +351,7 @@ Calculate a 0-100 score based on:
 ### Changing Output Format
 
 To modify the report structure, edit the `# OUTPUT FORMAT` section in `system.md`. You can:
+
 - Add new report sections
 - Reorder existing sections
 - Change emoji indicators
@@ -351,6 +364,7 @@ To modify the report structure, edit the `# OUTPUT FORMAT` section in `system.md
 Input: A basic service dashboard with 8 panels showing request rate, errors, and latency.
 
 Expected output: Likely medium maturity score with recommendations for:
+
 - Adding documentation
 - Implementing template variables
 - Including drill-down links
@@ -361,6 +375,7 @@ Expected output: Likely medium maturity score with recommendations for:
 Input: A comprehensive application dashboard with 35 panels, multiple variables, and mixed methodologies.
 
 Expected output: Potential high priority issues:
+
 - Too many panels (recommend splitting)
 - Performance concerns with refresh rate
 - Accessibility issues with color choices
@@ -371,6 +386,7 @@ Expected output: Potential high priority issues:
 Input: A USE method infrastructure dashboard with proper organization.
 
 Expected output: Likely high maturity score with recommendations for:
+
 - Minor accessibility improvements
 - Additional documentation
 - Optimization suggestions
@@ -384,6 +400,7 @@ Expected output: Likely high maturity score with recommendations for:
 ### Issue: Report is too verbose
 
 **Solution:** Use the filter script or post-process with grep to focus on specific severity levels:
+
 ```bash
 cat dashboard.json | fabric --pattern grafana-dashboard-audit | grep -A 10 "^## 🔴"
 ```
@@ -391,6 +408,7 @@ cat dashboard.json | fabric --pattern grafana-dashboard-audit | grep -A 10 "^## 
 ### Issue: JSON parsing errors
 
 **Solution:** Ensure your dashboard JSON is valid:
+
 ```bash
 cat dashboard.json | jq . > /dev/null && echo "Valid JSON" || echo "Invalid JSON"
 ```
@@ -410,6 +428,7 @@ cat dashboard.json | jq . > /dev/null && echo "Valid JSON" || echo "Invalid JSON
 ### External Resources
 
 This pattern is based on industry best practices from:
+
 - [Grafana Dashboard Best Practices](https://grafana.com/docs/grafana/latest/dashboards/build-dashboards/best-practices/)
 - [RED Method](https://grafana.com/blog/2018/08/02/the-red-method-how-to-instrument-your-services/)
 - [USE Method](http://www.brendangregg.com/usemethod.html)

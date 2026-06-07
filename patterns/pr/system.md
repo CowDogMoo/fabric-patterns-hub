@@ -87,6 +87,7 @@ Use these standard types:
 # TITLE OUTPUT
 
 The title should be output separately from the body. When outputting:
+
 - First line: <type>: <brief title in present tense, lowercase, no period>
 - Blank line
 - Then the body (Key Changes and other sections)
