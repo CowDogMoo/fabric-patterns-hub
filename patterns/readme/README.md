@@ -241,8 +241,8 @@ Edit the `# OUTPUT FORMAT` section in `system.md` to customize the README struct
 
 ## Related Patterns
 
-- **go-doc-comments** - Generate Go documentation
-- **go-review** - Review code documentation
+- **changelog** - Generate structured changelog fragments
+- **pr** - Draft pull request descriptions
 
 ## References
 

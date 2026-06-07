@@ -28,6 +28,10 @@ Example:
 
 Point your Fabric CLI or config to the `system.md` file you want to use.
 
+1. Decide Pattern vs Agent
+
+See [docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md) for when to use a pattern vs an agent.
+
 Example:
 
 ```yaml
@@ -57,16 +61,10 @@ patterns:
 - **[readme/](patterns/readme/)** – Generate comprehensive, well-structured
   README documentation for GitHub repositories following best practices
 
-#### Go-Specific Patterns
+#### Audit Patterns
 
-- **[go-tests/](patterns/go-tests/)** – Generate simple, pragmatic table-driven
-  tests for Go code following Go idioms and best practices
-- **[go-doc-comments/](patterns/go-doc-comments/)** – Generate or improve Go
-  documentation comments following official Go Doc Comments specification
-- **[go-review/](patterns/go-review/)** – Review Go code for idiomatic patterns,
-  best practices, and adherence to Go community conventions (2025)
-- **[go-refactor/](patterns/go-refactor/)** – Refactor Go code to be more
-  idiomatic and maintainable while preserving functionality
+- **[grafana-dashboard-audit/](patterns/grafana-dashboard-audit/)** – Audit
+  Grafana dashboard JSON for best practices, performance, and accessibility
 
 Each pattern directory contains:
 
@@ -100,28 +98,10 @@ fabric run --system ./patterns/pr/system.md --input ./my-diff.txt
 fabric run --system ./patterns/readme/system.md --input ./project-info.txt
 ```
 
-### Go Tests Pattern
+### Grafana Dashboard Audit Pattern
 
 ```bash
-fabric run --system ./patterns/go-tests/system.md --input ./my-go-file.go
-```
-
-### Go Doc Comments Pattern
-
-```bash
-fabric run --system ./patterns/go-doc-comments/system.md --input ./my-go-file.go
-```
-
-### Go Review Pattern
-
-```bash
-fabric run --system ./patterns/go-review/system.md --input ./my-go-file.go
-```
-
-### Go Refactor Pattern
-
-```bash
-fabric run --system ./patterns/go-refactor/system.md --input ./my-go-file.go
+fabric run --system ./patterns/grafana-dashboard-audit/system.md --input ./dashboard.json
 ```
 
 ---
