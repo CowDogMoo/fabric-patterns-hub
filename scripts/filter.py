@@ -56,12 +56,38 @@ def strip_leading_trailing_blanks(text: str) -> str:
 
 def remove_preamble(text: str) -> str:
     """Remove introductory 'Here is...' / 'Below is...' lines."""
-    return re.sub(
+    text = re.sub(
         r"^(Here is|Here's|Below is) (the|an?) .*:?\s*$",
         "",
         text,
         flags=re.MULTILINE,
     )
+    return strip_leading_announcement(text)
+
+
+def strip_leading_announcement(text: str) -> str:
+    """Drop a leading narrative line that announces the real output.
+
+    Models often prefix output with a sentence whose announcing clause is not
+    at the start of the line, e.g. "Based on the git diff, this adds a single
+    new file `x`. Here is the commit message:". The anchored pattern in
+    remove_preamble only matches when the line *begins* with the clause, so
+    such a line survives and merge_sections then promotes it to the title.
+
+    Only the first non-blank line is considered, so body content that happens
+    to end in a colon is never touched.
+    """
+    lines = text.split("\n")
+    idx = next((i for i, ln in enumerate(lines) if ln.strip()), None)
+    if idx is None:
+        return text
+    announce = re.compile(
+        r"\b(here is|here's|below is|the following is)\b[^.]*:\s*$",
+        re.IGNORECASE,
+    )
+    if announce.search(lines[idx]):
+        del lines[idx]
+    return "\n".join(lines)
 
 
 def remove_placeholder_lines(text: str) -> str:
