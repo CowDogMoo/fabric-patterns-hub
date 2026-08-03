@@ -17,6 +17,7 @@ from filter import (
     strip_leading_trailing_blanks,
     strip_trailing_whitespace,
     strip_wrapping_fences,
+    truncate_pattern_boilerplate,
 )
 
 
@@ -172,6 +173,58 @@ class TestRemovePlaceholderLines:
         lines = [line for line in result.split("\n") if line.strip()]
         assert len(lines) == 2
 
+    def test_angle_bracket_placeholder(self):
+        result = remove_placeholder_lines("- <most important change>")
+        assert result.strip() == ""
+
+    def test_multiple_angle_brackets_on_one_line(self):
+        result = remove_placeholder_lines("- <what was added> - <file ref>")
+        assert result.strip() == ""
+
+    def test_bare_angle_placeholder(self):
+        result = remove_placeholder_lines("<title>")
+        assert result.strip() == ""
+
+    def test_preserves_prose_containing_angle_brackets(self):
+        text = "- <details> blocks are now escaped in generated output"
+        assert remove_placeholder_lines(text) == text
+
+    def test_preserves_generic_type_in_prose(self):
+        text = "- Added Vec<String> handling to the parser"
+        assert remove_placeholder_lines(text) == text
+
+
+class TestTruncatePatternBoilerplate:
+    def test_truncates_at_output_instructions(self):
+        text = "feat: add thing\n\nReal body.\n\n# OUTPUT INSTRUCTIONS\n\n- Do the thing"
+        result = truncate_pattern_boilerplate(text)
+        assert "Real body." in result
+        assert "OUTPUT INSTRUCTIONS" not in result
+        assert "Do the thing" not in result
+
+    def test_truncates_at_example_output(self):
+        text = "fix: bug\n\nBody.\n\n## EXAMPLE OUTPUT\n\nfeat: sample"
+        result = truncate_pattern_boilerplate(text)
+        assert "EXAMPLE OUTPUT" not in result
+
+    def test_preserves_lowercase_headings(self):
+        """'## Steps to reproduce' is prose, not pattern scaffolding."""
+        text = "feat: add thing\n\n## Steps to reproduce\n\n1. Run task test\n2. Observe"
+        assert truncate_pattern_boilerplate(text) == text
+
+    def test_preserves_title_cased_input_heading(self):
+        text = "fix: parser\n\n## Input\n\nThe parser now accepts YAML."
+        assert truncate_pattern_boilerplate(text) == text
+
+    def test_keeps_boilerplate_when_no_content_precedes_it(self):
+        """Truncating to nothing would be worse than leaving the boilerplate."""
+        text = "# IDENTITY\n\nYou are a helpful assistant."
+        assert truncate_pattern_boilerplate(text) == text
+
+    def test_no_marker(self):
+        text = "feat: thing\n\n- One\n- Two"
+        assert truncate_pattern_boilerplate(text) == text
+
 
 class TestCollapsBlankLines:
     def test_collapses_to_one(self):
@@ -309,6 +362,18 @@ class TestMergeSections:
         result = merge_sections(text, ["Key Changes", "Added", "Changed", "Removed"])
         assert "**Key Changes:**" in result
         assert "**Added:**" in result
+
+    def test_keeps_content_on_the_header_line(self):
+        text = "feat: add auth\n\n**Added:** login handler in auth.go\n**Changed:** tweaked mutex"
+        result = merge_sections(text, ["Added", "Changed", "Removed"])
+        assert "login handler in auth.go" in result
+        assert "tweaked mutex" in result
+
+    def test_header_with_trailing_whitespace(self):
+        text = "feat: x\n\n**Added:**   \n- Login"
+        result = merge_sections(text, ["Added", "Changed", "Removed"])
+        assert "**Added:**" in result
+        assert "Login" in result
 
     def test_blank_between_preamble_and_first_section(self):
         """Preamble content and the first section must have a blank line between them."""

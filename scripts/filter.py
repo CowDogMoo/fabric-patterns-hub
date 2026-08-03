@@ -113,6 +113,46 @@ def remove_placeholder_lines(text: str) -> str:
     ]
     for pattern in patterns:
         text = re.sub(pattern, "", text, flags=re.MULTILINE | re.IGNORECASE)
+    return "\n".join("" if is_angle_placeholder(ln) else ln for ln in text.split("\n"))
+
+
+def is_angle_placeholder(line: str) -> bool:
+    """Report whether a line is only angle-bracket placeholders and punctuation.
+
+    Catches echoed template lines like "- <most important change>" and
+    "- <what was added> - <file ref>", where nothing outside the brackets
+    carries meaning. A line that says something of its own — e.g.
+    "- <details> blocks are now escaped" — keeps word characters after the
+    brackets are removed, so it survives.
+    """
+    if "<" not in line:
+        return False
+    return not re.search(r"\w", re.sub(r"<[^>]*>", "", line))
+
+
+def truncate_pattern_boilerplate(text: str) -> str:
+    """Drop echoed fabric-pattern instructional sections.
+
+    Some models regurgitate the pattern's own scaffolding (OUTPUT FORMAT,
+    TITLE OUTPUT, EXAMPLE OUTPUT, and so on). These ALL-CAPS instructional
+    headers never belong in real output, so cut everything from the first
+    one onward.
+
+    The match is case-sensitive on purpose: "## Steps to reproduce" is
+    ordinary prose in a PR body, while "## STEPS" is pattern scaffolding.
+    A marker before any real content is left alone — echoed boilerplate is a
+    better outcome than an empty commit message.
+    """
+    marker = re.compile(
+        r"^#{1,6}\s+(IDENTITY|STEPS|CONVENTIONAL COMMITS|OUTPUT INSTRUCTIONS|"
+        r"OUTPUT FORMAT|TITLE OUTPUT|EXAMPLE OUTPUT|INPUT)\b"
+    )
+    lines = text.split("\n")
+    for i, line in enumerate(lines):
+        if marker.match(line):
+            if not any(ln.strip() for ln in lines[:i]):
+                return text
+            return "\n".join(lines[:i])
     return text
 
 
@@ -221,12 +261,15 @@ def merge_sections(text: str, section_names: list[str]) -> str:
     """Parse bold section headers, merge duplicates, drop empty sections.
 
     Handles sections like **Added:**, **Changed:**, **Removed:**, **Key Changes:**
+
+    Content on the same line as a header (**Added:** a new module) is kept as
+    that section's first line rather than dropped with the header.
     """
     lines = text.split("\n")
 
     # Build header patterns
     header_pattern = re.compile(
-        r"^\*\*(" + "|".join(re.escape(s) for s in section_names) + r"):\*\*\s*$"
+        r"^\*\*(" + "|".join(re.escape(s) for s in section_names) + r"):\*\*(.*)$"
     )
 
     title = ""
@@ -247,6 +290,9 @@ def merge_sections(text: str, section_names: list[str]) -> str:
         match = header_pattern.match(line)
         if match:
             current_section = match.group(1)
+            inline = match.group(2).strip()
+            if inline:
+                sections[current_section].append(inline)
             continue
 
         # Accumulate into the right bucket
@@ -285,6 +331,7 @@ def filter_text(
     """Apply all filter steps to the input text."""
     text = strip_wrapping_fences(text)
     text = strip_leading_trailing_blanks(text)
+    text = truncate_pattern_boilerplate(text)
     text = remove_preamble(text)
     text = remove_placeholder_lines(text)
 
