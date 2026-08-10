@@ -21,6 +21,7 @@ Patterns are stored under `patterns/<pattern-name>/system.md`.
 
 Example:
 
+- **Branch name generation**: `patterns/branch/system.md`
 - **Commit message generation**: `patterns/commit/system.md`
 - **Pull request description generation**: `patterns/pr/system.md`
 
@@ -36,6 +37,8 @@ Example:
 
 ```yaml
 patterns:
+  branch:
+    system: ./patterns/branch/system.md
   commit:
     system: ./patterns/commit/system.md
   pr:
@@ -52,6 +55,8 @@ patterns:
 
 #### General Patterns
 
+- **[branch/](patterns/branch/)** – Generate clean, idiomatic git branch
+  names from descriptions or changes
 - **[changelog/](patterns/changelog/)** – Generate structured changelog
   fragments for Ansible collections using antsibull-changelog format
 - **[commit/](patterns/commit/)** – Generate clear, Conventional
@@ -73,6 +78,12 @@ Each pattern directory contains:
 ---
 
 ## ✍️ Usage Examples
+
+### Branch Pattern
+
+```bash
+fabric run --system ./patterns/branch/system.md --input ./task-description.txt
+```
 
 ### Changelog Pattern
 
