@@ -10,6 +10,7 @@ from filter import (
     drop_empty_heading_sections,
     ensure_blank_after_title,
     filter_text,
+    looks_like_api_error,
     merge_sections,
     normalize_section_spacing,
     remove_placeholder_lines,
@@ -590,3 +591,32 @@ class TestFilterTextIntegration:
         text = "```bash\nHere is the branch name:\nfeature/ui-89-dark-mode-toggle\n```"
         result = filter_text(text)
         assert result == "feature/ui-89-dark-mode-toggle"
+
+
+class TestLooksLikeApiError:
+    def test_anthropic_400_error(self):
+        text = (
+            'POST "https://api.anthropic.com/v1/messages": 400 Bad Request '
+            '(Request-ID: req_x) {"type":"error","error":'
+            '{"type":"invalid_request_error","message":"`temperature` is deprecated"}}'
+        )
+        assert looks_like_api_error(text)
+
+    def test_bare_json_error_first_line(self):
+        text = '{"type":"error","error":{"type":"overloaded_error"}}'
+        assert looks_like_api_error(text)
+
+    def test_error_after_blank_lines(self):
+        text = '\n\nPOST "https://api.openai.com/v1/chat": 503 Service Unavailable'
+        assert looks_like_api_error(text)
+
+    def test_normal_commit_message(self):
+        text = "fix: handle union type\n\n**Changed:**\n\n- Updated extraction"
+        assert not looks_like_api_error(text)
+
+    def test_error_mentioned_in_body_only(self):
+        text = 'fix: retry on 400 Bad Request\n\nPOST "https://x.example": 400 handling'
+        assert not looks_like_api_error(text)
+
+    def test_empty_input(self):
+        assert not looks_like_api_error("")
