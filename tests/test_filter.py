@@ -580,3 +580,14 @@ class TestFilterTextIntegration:
         result = filter_text(text)
         for line in result.split("\n"):
             assert line == line.rstrip(), f"Trailing whitespace in: {line!r}"
+
+    def test_branch_filter(self):
+        text = "feature/auth-123-login-page\n"
+        result = filter_text(text)
+        assert result == "feature/auth-123-login-page"
+
+    def test_branch_filter_with_fences_and_preamble(self):
+        text = "```bash\nHere is the branch name:\nfeature/ui-89-dark-mode-toggle\n```"
+        result = filter_text(text)
+        assert result == "feature/ui-89-dark-mode-toggle"
+

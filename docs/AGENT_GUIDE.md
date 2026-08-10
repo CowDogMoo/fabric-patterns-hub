@@ -55,6 +55,7 @@ the agent definition.
 
 ### Pattern-preferred
 
+- branch
 - commit
 - pr
 - changelog
