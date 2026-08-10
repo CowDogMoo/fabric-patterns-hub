@@ -44,7 +44,8 @@ if echo "$TEST_INPUT" | fabric --pattern "$PATTERN_DIR" | "$SCRIPT_DIR/filter.sh
 	echo "Validating branch name format..."
 	branch_name=$(tr -d '[:space:]' <"$OUTPUT_FILE")
 
-	if [[ "$branch_name" =~ ^(feature|bugfix|hotfix|refactor|docs|chore|test|perf|release)/[a-z0-9-]+$ ]]; then
+	# Dots are allowed for release version branches (e.g. release/v2.4.0)
+	if [[ "$branch_name" =~ ^(feature|bugfix|hotfix|refactor|docs|chore|test|perf|release)/[a-z0-9-]+(\.[a-z0-9-]+)*$ ]]; then
 		echo "  ✓ Valid prefix and kebab-case slug: $branch_name"
 		echo ""
 		echo "Pattern test successful!"

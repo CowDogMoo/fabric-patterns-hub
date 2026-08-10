@@ -590,4 +590,3 @@ class TestFilterTextIntegration:
         text = "```bash\nHere is the branch name:\nfeature/ui-89-dark-mode-toggle\n```"
         result = filter_text(text)
         assert result == "feature/ui-89-dark-mode-toggle"
-
