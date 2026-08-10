@@ -20,6 +20,27 @@ import re
 import sys
 
 
+def looks_like_api_error(text: str) -> bool:
+    """Report whether the input is a fabric/LLM API error, not model output.
+
+    When the upstream API rejects a request, fabric prints the error to
+    stdout, e.g.:
+
+        POST "https://api.anthropic.com/v1/messages": 400 Bad Request
+        (Request-ID: ...) {"type":"error","error":{...}}
+
+    Passing that through produces a garbage commit message or PR body, so
+    the filter must abort instead. Only the first non-blank line is
+    checked — real output that merely discusses an API error elsewhere in
+    the body is untouched.
+    """
+    first = next((ln for ln in text.split("\n") if ln.strip()), "")
+    return bool(
+        re.search(r'\b(GET|POST|PUT|PATCH|DELETE) "https?://\S+": \d{3} ', first)
+        or re.search(r'"type"\s*:\s*"error"', first)
+    )
+
+
 def strip_wrapping_fences(text: str) -> str:
     """Remove code fences that wrap the entire output, preserving internal ones.
 
@@ -372,6 +393,9 @@ def main():
         section_names = [s.strip() for s in args.sections.split(",")]
 
     text = sys.stdin.read()
+    if looks_like_api_error(text):
+        print(f"filter.py: input is an API error, not model output:\n{text}", file=sys.stderr)
+        sys.exit(1)
     result = filter_text(
         text,
         section_names=section_names,
