@@ -127,4 +127,5 @@ feat: add dynamic device configuration management
 
 # INPUT
 
-The git diff and/or commit messages to analyze:
+The git diff and/or commit messages to analyze arrive in the User Message,
+not below this line.

@@ -107,4 +107,5 @@ Output: release/v2.4.0
 
 # INPUT
 
-A description of the work, ticket/issue details, or git diff/status:
+A description of the work, ticket/issue details, or git diff/status arrives
+in the User Message, not below this line.
