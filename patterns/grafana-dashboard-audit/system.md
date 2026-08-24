@@ -257,4 +257,4 @@ When analyzing multiple dashboard files in one input:
 
 # INPUT
 
-Dashboard JSON(s) to analyze:
+Dashboard JSON(s) to analyze arrive in the User Message, not below this line.

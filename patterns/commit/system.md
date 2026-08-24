@@ -115,4 +115,4 @@ feat: add new asdf role with tests and linting
 
 # INPUT
 
-The git diff to analyze:
+The git diff to analyze arrives in the User Message, not below this line.

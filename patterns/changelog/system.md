@@ -112,4 +112,5 @@ fixed:
 
 # INPUT
 
-Git commits or release notes to generate changelog from:
+Git commits or release notes to generate the changelog from arrive in the
+User Message, not below this line.
