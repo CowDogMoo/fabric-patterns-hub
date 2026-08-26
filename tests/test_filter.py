@@ -370,6 +370,33 @@ class TestMergeSections:
         assert "login handler in auth.go" in result
         assert "tweaked mutex" in result
 
+    def test_drops_false_start_title_and_self_correction(self):
+        # Observed failure: the model emits a wrong (even conventional-commit
+        # formatted) title, corrects itself in prose, then writes the real
+        # output. The last conventional-commit line before the sections wins.
+        text = (
+            "**feat: add unrelated hallucinated capability**\n\n"
+            "Wait — that's not right. Let me actually do the job I was given.\n\n"
+            "refactor: use the real title\n\n"
+            "**Added:**\n- Real content"
+        )
+        result = merge_sections(text, ["Added", "Changed", "Removed"])
+        assert result.startswith("refactor: use the real title")
+        assert "hallucinated" not in result
+        assert "Wait — that's not right" not in result
+        assert "Real content" in result
+
+    def test_unwraps_bold_title(self):
+        text = "**fix: bold-wrapped title**\n\n**Added:**\n- Stuff"
+        result = merge_sections(text, ["Added", "Changed", "Removed"])
+        assert result.startswith("fix: bold-wrapped title")
+
+    def test_non_conventional_title_keeps_first_line(self):
+        text = "A plain descriptive title\n\nBody text.\n\n**Added:**\n- Stuff"
+        result = merge_sections(text, ["Added", "Changed", "Removed"])
+        assert result.startswith("A plain descriptive title")
+        assert "Body text." in result
+
     def test_header_with_trailing_whitespace(self):
         text = "feat: x\n\n**Added:**   \n- Login"
         result = merge_sections(text, ["Added", "Changed", "Removed"])
