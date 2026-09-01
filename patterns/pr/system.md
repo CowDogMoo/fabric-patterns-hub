@@ -69,6 +69,11 @@ Some repos enforce a pull request template. When the User Message opens with a
 `REQUIRED PR TEMPLATE HEADINGS` block, those headings define the body's structure
 and the two "ONLY use the sections" rules above do not apply. In that mode:
 
+- **The first line of output is STILL the `<type>: <title>` line described under
+  TITLE OUTPUT.** Template headings structure the BODY, which starts on the line
+  after it. NEVER open the output with a heading: the title is consumed separately
+  and a `##` line in that position becomes the PR's title, which fails the
+  semantic-title check and leaves the body a heading short
 - Reproduce every listed heading verbatim on its own line - the `##`, the wording,
   the punctuation, any trailing colon - in the order given. The CI check greps the
   body for each heading as a literal substring, so rewording one or changing its
@@ -117,7 +122,9 @@ The title should be output separately from the body. When outputting:
 
 - First line: <type>: <brief title in present tense, lowercase, no period>
 - Blank line
-- Then the body (Key Changes and other sections)
+- Then the body (Key Changes and other sections, or the required template
+  headings when the input supplies them)
+- This holds in EVERY mode. The first line is never a `#` heading
 
 # EXAMPLE OUTPUT
 
