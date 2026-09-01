@@ -18,6 +18,7 @@ Usage:
 import argparse
 import re
 import sys
+from collections.abc import Iterable
 
 
 def looks_like_api_error(text: str) -> bool:
@@ -215,12 +216,46 @@ def ensure_blank_after_title(text: str, blank_after_title: bool = True) -> str:
     return title
 
 
-def drop_empty_heading_sections(text: str) -> str:
+BOLD_SECTION_RE = re.compile(r"^\*\*[^*]+:\*\*\s*$")
+
+
+def drop_empty_bold_sections(text: str) -> str:
+    """Drop "**Name:**" sub-section headers that ended up with no content.
+
+    remove_placeholder_lines() deletes the "No content was removed" line but
+    leaves the header that introduced it. merge_sections() hides that, because
+    it re-emits only sections that have content; the heading path does not, so
+    an empty header survives into the body as a dangling label.
+    """
+    lines = text.split("\n")
+    keep = [True] * len(lines)
+    for i, line in enumerate(lines):
+        if not BOLD_SECTION_RE.match(line):
+            continue
+        nxt = i + 1
+        while nxt < len(lines) and not lines[nxt].strip():
+            nxt += 1
+        if nxt >= len(lines) or BOLD_SECTION_RE.match(lines[nxt]) or lines[nxt].startswith("#"):
+            keep[i] = False
+    return "\n".join(line for line, kept in zip(lines, keep, strict=True) if kept)
+
+
+def normalize_heading(heading: str) -> str:
+    """Reduce a heading to a form that compares stably across minor edits."""
+    return re.sub(r"\s+", " ", heading.strip().lstrip("#").strip()).casefold()
+
+
+def drop_empty_heading_sections(text: str, keep_headings: Iterable[str] = ()) -> str:
     """Remove markdown heading sections that have no content.
 
     A section is empty if it contains only blank lines or separators (---)
     before the next heading of equal or higher level, or end of text.
+
+    Headings in keep_headings survive even when empty. A PR template check
+    greps the body for its required headings, so dropping one as "empty"
+    turns a thin section into a failed build rather than a tidier body.
     """
+    kept = {normalize_heading(h) for h in keep_headings}
     lines = text.split("\n")
     # Parse into (heading_level, heading_line, content_lines) groups
     sections: list[tuple[int, str, list[str]]] = []
@@ -246,7 +281,7 @@ def drop_empty_heading_sections(text: str) -> str:
         if level == 0:
             # Pre-heading content, always keep
             result_lines.extend(content)
-        elif substantive:
+        elif substantive or normalize_heading(heading) in kept:
             result_lines.append(heading)
             result_lines.extend(content)
 
@@ -348,6 +383,7 @@ def filter_text(
     section_names: list[str] | None = None,
     max_blanks: int = 1,
     blank_after_title: bool = True,
+    required_headings: list[str] | None = None,
 ) -> str:
     """Apply all filter steps to the input text."""
     text = strip_wrapping_fences(text)
@@ -356,7 +392,14 @@ def filter_text(
     text = remove_preamble(text)
     text = remove_placeholder_lines(text)
 
-    if section_names:
+    if required_headings:
+        # Section merging reorders every named section to the end of the body, which
+        # would pull bullets out from under the template headings they belong to, so
+        # required headings and section merging are mutually exclusive.
+        text = drop_empty_bold_sections(text)
+        text = drop_empty_heading_sections(text, keep_headings=required_headings)
+        text = normalize_section_spacing(text)
+    elif section_names:
         text = merge_sections(text, section_names)
         text = ensure_blank_after_title(text, blank_after_title=blank_after_title)
     else:
@@ -382,6 +425,15 @@ def main():
         help="Maximum consecutive blank lines (default: 1)",
     )
     parser.add_argument(
+        "--required-heading",
+        action="append",
+        dest="required_headings",
+        metavar="HEADING",
+        help="Markdown heading the body must keep even when empty; repeatable. "
+        "Suppresses --sections merging, which would reorder content out from "
+        "under these headings.",
+    )
+    parser.add_argument(
         "--no-blank-after-title",
         action="store_true",
         help="Do not insert a blank line between title and body (useful for PR descriptions)",
@@ -401,6 +453,7 @@ def main():
         section_names=section_names,
         max_blanks=args.max_blanks,
         blank_after_title=not args.no_blank_after_title,
+        required_headings=args.required_headings,
     )
     print(result)
 
