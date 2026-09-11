@@ -15,6 +15,7 @@ from filter import (
     normalize_section_spacing,
     remove_placeholder_lines,
     remove_preamble,
+    strip_attribution_lines,
     strip_leading_trailing_blanks,
     strip_trailing_whitespace,
     strip_wrapping_fences,
@@ -618,6 +619,95 @@ class TestFilterTextIntegration:
         text = "```bash\nHere is the branch name:\nfeature/ui-89-dark-mode-toggle\n```"
         result = filter_text(text)
         assert result == "feature/ui-89-dark-mode-toggle"
+
+
+class TestStripAttributionLines:
+    """Attribution footers Claude Code instructs its model to append."""
+
+    def test_removes_claude_code_markdown_footer(self):
+        text = (
+            "feat: x\n\n- a change\n\n"
+            "🤖 Generated with [Claude Code](https://claude.com/claude-code)"
+        )
+        assert strip_attribution_lines(text) == "feat: x\n\n- a change\n\n"
+
+    def test_removes_plain_text_footer(self):
+        assert strip_attribution_lines("Generated with Claude Code") == ""
+
+    def test_removes_footer_without_emoji(self):
+        text = "Generated with [Claude Code](https://claude.com/claude-code)"
+        assert strip_attribution_lines(text) == ""
+
+    def test_removes_co_authored_by_claude_trailer(self):
+        text = "fix: y\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+        assert strip_attribution_lines(text) == "fix: y\n\n"
+
+    def test_removes_lowercase_co_authored_by(self):
+        text = "Co-authored-by: Claude <noreply@anthropic.com>"
+        assert strip_attribution_lines(text) == ""
+
+    def test_removes_claude_code_co_author_variant(self):
+        text = "Co-Authored-By: Claude Code <noreply@anthropic.com>"
+        assert strip_attribution_lines(text) == ""
+
+    def test_removes_antigravity_and_gemini_trailers(self):
+        text = (
+            "Co-Authored-By: Antigravity <noreply@google.com>\n"
+            "Co-Authored-By: Gemini <x@google.com>"
+        )
+        assert strip_attribution_lines(text) == "\n"
+
+    def test_removes_session_trailer_and_bare_url(self):
+        text = (
+            "Claude-Session: https://claude.ai/code/session_012abc\n"
+            "https://claude.ai/code/session_012abc"
+        )
+        assert strip_attribution_lines(text) == "\n"
+
+    def test_keeps_bullet_that_mentions_the_footer(self):
+        text = "- Strip the 🤖 Generated with Claude Code footer from PR bodies"
+        assert strip_attribution_lines(text) == text
+
+    def test_keeps_prose_mentioning_co_authored_by(self):
+        text = "- Reject commits whose Co-Authored-By: Claude trailer slipped past the hook"
+        assert strip_attribution_lines(text) == text
+
+    def test_keeps_human_co_author(self):
+        text = "Co-Authored-By: Jane Doe <jane@example.com>"
+        assert strip_attribution_lines(text) == text
+
+    def test_empty_input(self):
+        assert strip_attribution_lines("") == ""
+
+
+class TestFilterTextAttribution:
+    """End-to-end: the PR 68 shape, footer after the last section."""
+
+    def test_pr_body_footer_removed_through_pr_filter(self):
+        text = (
+            "docs: split measurement takes into their own Live set\n\n"
+            "**Key Changes:**\n\n- documented the split\n\n"
+            "**Removed:**\n\n- the old instruction\n\n"
+            "🤖 Generated with [Claude Code](https://claude.com/claude-code)\n"
+        )
+        result = filter_text(
+            text,
+            section_names=["Key Changes", "Added", "Changed", "Removed"],
+            blank_after_title=False,
+        )
+        assert "Generated with" not in result
+        assert "🤖" not in result
+        assert result.endswith("- the old instruction")
+
+    def test_commit_message_trailer_removed_through_commit_filter(self):
+        text = (
+            "fix: thing\n\n**Changed:**\n\n- did it\n\n"
+            "Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>\n"
+        )
+        result = filter_text(text, section_names=["Added", "Changed", "Removed"], max_blanks=2)
+        assert "Co-Authored-By" not in result
+        assert "anthropic.com" not in result
+        assert result.endswith("- did it")
 
 
 class TestLooksLikeApiError:

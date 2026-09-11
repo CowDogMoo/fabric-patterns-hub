@@ -151,6 +151,46 @@ def is_angle_placeholder(line: str) -> bool:
     return not re.search(r"\w", re.sub(r"<[^>]*>", "", line))
 
 
+ATTRIBUTION_LINE_RES = [
+    # "🤖 Generated with [Claude Code](https://claude.com/claude-code)" and the
+    # plain-text variant. Anchored so a bullet that *talks about* the footer
+    # ("- Strip the Generated with Claude Code footer") is left alone.
+    re.compile(
+        r"^\s*(?:🤖\s*)?Generated with (?:\[Claude Code\]\([^)]*\)|Claude Code)"
+        r"[\s.!]*$",
+        re.IGNORECASE,
+    ),
+    # Co-Authored-By trailers for AI assistants, in either capitalisation.
+    re.compile(
+        r"^\s*Co-Authored-By:\s*(?:Claude|Antigravity|Gemini)\b.*$",
+        re.IGNORECASE,
+    ),
+    # Any trailer pointing at the assistants' no-reply mailboxes.
+    re.compile(r"^\s*[\w-]+:\s*.*<[^>]*@(?:anthropic\.com|google\.com)>\s*$"),
+    # Session-link trailers and bare session URLs.
+    re.compile(r"^\s*Claude-Session:\s*https?://\S+\s*$", re.IGNORECASE),
+    re.compile(r"^\s*https?://claude\.ai/code/session_\S+\s*$"),
+]
+
+
+def strip_attribution_lines(text: str) -> str:
+    """Drop AI-assistant attribution footers and trailers.
+
+    Claude Code tells the model it drives to end pull request descriptions with
+    "🤖 Generated with [Claude Code](...)" and commit messages with a
+    `Co-Authored-By: Claude ...` trailer. When a pattern runs through that CLI
+    the model appends the line to its answer, and `squad_pr` then ships it
+    straight into the PR body. The forbidden-content hooks only inspect the
+    literal command string, so the footer sails past them.
+
+    Every pattern is anchored to a whole line, so prose that merely mentions
+    the footer survives.
+    """
+    return "\n".join(
+        "" if any(rx.match(ln) for rx in ATTRIBUTION_LINE_RES) else ln for ln in text.split("\n")
+    )
+
+
 def truncate_pattern_boilerplate(text: str) -> str:
     """Drop echoed fabric-pattern instructional sections.
 
@@ -389,6 +429,7 @@ def filter_text(
     text = strip_leading_trailing_blanks(text)
     text = truncate_pattern_boilerplate(text)
     text = remove_preamble(text)
+    text = strip_attribution_lines(text)
     text = remove_placeholder_lines(text)
 
     if section_names:
