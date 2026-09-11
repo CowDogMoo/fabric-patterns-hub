@@ -1,141 +1,127 @@
-# 🧵 Fabric Patterns Hub
+# 🧵 Git Text Patterns
 
-Fabric Patterns Hub is a collection of custom [Fabric](https://github.com/danielmiessler/Fabric)
-patterns for enhancing workflows, improving consistency, and enabling
-collaboration. Patterns can be used as-is or adapted for your own Fabric setup.
+Three prompt-and-filter pairs that turn a git diff into text: a branch name, a
+commit message, or a pull request title and body.
+
+Each pattern is a system prompt plus a deterministic output filter. The prompt
+is model-agnostic; the filter is what makes the output safe to pipe straight
+into `git commit -F -` or `gh pr create` without a human reading it first.
 
 ---
 
 ## 🚀 Getting Started
 
-1. Clone the Repository
-
 ```bash
-gh repo clone CowDogMoo/fabric-patterns-hub
-cd fabric-patterns-hub
+gh repo clone CowDogMoo/git-text-patterns
+cd git-text-patterns
 ```
 
-1. Locate a Pattern
+Patterns live at `patterns/<name>/`, each containing:
 
-Patterns are stored under `patterns/<pattern-name>/system.md`.
-
-Example:
-
-- **Branch name generation**: `patterns/branch/system.md`
-- **Commit message generation**: `patterns/commit/system.md`
-- **Pull request description generation**: `patterns/pr/system.md`
-
-1. Use in Fabric
-
-Point your Fabric CLI or config to the `system.md` file you want to use.
-
-1. Decide Pattern vs Agent
-
-See [docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md) for when to use a pattern vs an agent.
-
-Example:
-
-```yaml
-patterns:
-  branch:
-    system: ./patterns/branch/system.md
-  commit:
-    system: ./patterns/commit/system.md
-  pr:
-    system: ./patterns/pr/system.md
-  readme:
-    system: ./patterns/readme/system.md
-```
+| File | Purpose |
+|------|---------|
+| `system.md` | The system prompt |
+| `filter.sh` | Deterministic post-processing (required — see below) |
+| `README.md` | Usage and worked examples |
 
 ---
 
 ## 📂 Available Patterns
 
-### 📚 Pattern Categories
+| Pattern | Input | Output |
+|---------|-------|--------|
+| **[branch/](patterns/branch/)** | a description, or a diff | one git branch name |
+| **[commit/](patterns/commit/)** | `git diff --staged` | a Conventional Commits message |
+| **[pr/](patterns/pr/)** | `git diff <base>...HEAD` | a PR title line + body |
 
-#### General Patterns
-
-- **[branch/](patterns/branch/)** – Generate clean, idiomatic git branch
-  names from descriptions or changes
-- **[changelog/](patterns/changelog/)** – Generate structured changelog
-  fragments for Ansible collections using antsibull-changelog format
-- **[commit/](patterns/commit/)** – Generate clear, Conventional
-  Commits-compliant messages from `git diff`
-- **[pr/](patterns/pr/)** – Draft concise, informative pull request
-  descriptions from changes
-- **[readme/](patterns/readme/)** – Generate comprehensive, well-structured
-  README documentation for GitHub repositories following best practices
-
-#### Audit Patterns
-
-- **[grafana-dashboard-audit/](patterns/grafana-dashboard-audit/)** – Audit
-  Grafana dashboard JSON for best practices, performance, and accessibility
-
-Each pattern directory contains:
-
-- **`system.md`** — Core Fabric prompt instructions
+All three take their input on **stdin** and emit text on **stdout**. None of
+them reads your working directory or writes a file.
 
 ---
 
-## ✍️ Usage Examples
+## 🔧 Why the filter exists
 
-### Branch Pattern
+A raw model response is not safe to commit. `scripts/filter.py` is the shared
+post-processor that strips code fences, removes echoed prompt boilerplate,
+drops "Here is your commit message" preambles, collapses blank runs, strips
+AI-assistant attribution footers, and aborts on an upstream API error rather
+than committing the error text.
+
+Each pattern parameterizes it:
 
 ```bash
-fabric run --system ./patterns/branch/system.md --input ./task-description.txt
+# commit
+filter.py --sections "Added,Changed,Removed" --max-blanks 2
+
+# pr
+filter.py --sections "Key Changes,Added,Changed,Removed" --no-blank-after-title
+
+# branch — reduce to the last line that is a plausible git ref
+filter.py | grep -E '^[A-Za-z0-9][A-Za-z0-9._/-]*$' | tail -n 1
 ```
 
-### Changelog Pattern
+`PR_REQUIRED_HEADINGS` is read from the environment by the `pr` filter to keep
+a repository's mandatory template headings intact.
+
+---
+
+## ✍️ Usage
+
+These patterns are driven by the `squad_gen` helper in
+[l50/dotfiles](https://github.com/l50/dotfiles) (`git.sh`), which runs squad's
+pure-text transform on the `claude-code` provider and pipes the result through
+the pattern's filter:
 
 ```bash
-fabric run --system ./patterns/changelog/system.md --input ./git-log.txt
+git ds | squad_gen commit          # commit message
+git diff main...HEAD | squad_gen pr # PR title + body
+squad_branch fix auth token expiry  # branch name, checked out
 ```
 
-### Commit Pattern
+Directly, without the helper:
 
 ```bash
-fabric run --system ./patterns/commit/system.md --input ./my-diff.txt
+git diff --staged \
+  | squad run --provider claude-code --system "$(cat patterns/commit/system.md)" \
+  | ./patterns/commit/filter.sh
 ```
 
-### Pull Request Pattern
+---
+
+## 🧭 Pattern or agent?
+
+These patterns are **stdin→stdout transforms** whose input a pipe already
+produces. That is the whole test.
+
+If a job needs to read a repository to do its work — generate a README, write a
+changelog from history, audit dashboards — it belongs in
+[squad-agents](https://github.com/cowdogmoo/squad-agents) as an agent, with its
+standards document as a skill. Making a human paste the context an agent could
+gather itself is the anti-pattern.
+
+See [docs/AGENT_GUIDE.md](docs/AGENT_GUIDE.md) for the full decision guide.
+
+---
+
+## 🧪 Tests
 
 ```bash
-fabric run --system ./patterns/pr/system.md --input ./my-diff.txt
-```
-
-### README Pattern
-
-```bash
-fabric run --system ./patterns/readme/system.md --input ./project-info.txt
-```
-
-### Grafana Dashboard Audit Pattern
-
-```bash
-fabric run --system ./patterns/grafana-dashboard-audit/system.md --input ./dashboard.json
+task test          # pytest over scripts/filter.py
+task               # pre-commit + tests
 ```
 
 ---
 
 ## 🤝 Contributing
 
-We welcome new patterns and improvements!
-To contribute:
-
 1. Fork the repository
-1. Read the **[Pattern Creation Guide](docs/PATTERN_GUIDE.md)** for quality standards
-1. Create a new pattern under `patterns/<pattern-name>/`
-1. Add at least:
-
-   - `system.md` (required)
-   - `filter.sh` for output cleanup _(recommended)_
-   - `README.md` with usage examples _(recommended)_
-   - `examples/` folder with sample inputs/outputs _(optional but encouraged)_
-
+1. Read the **[Pattern Creation Guide](docs/PATTERN_GUIDE.md)**
+1. Create `patterns/<name>/` with `system.md` and `filter.sh`
+1. Add tests to `tests/test_filter.py` for any new filter behavior
 1. Submit a pull request
 
-See [docs/PATTERN_GUIDE.md](docs/PATTERN_GUIDE.md) for comprehensive guidance on
-creating high-quality patterns, including templates and checklists.
+A new pattern belongs here only if its input arrives on stdin and its output is
+text. Otherwise open it as an agent in squad-agents.
 
 ---
 

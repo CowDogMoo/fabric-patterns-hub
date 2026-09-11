@@ -1,7 +1,12 @@
-# Fabric Pattern Creation Guide
+# Pattern Creation Guide
 
-A comprehensive guide to creating high-quality fabric patterns that match the
+A comprehensive guide to creating high-quality patterns that match the
 standards established in this repository.
+
+> **Scope check first.** A pattern belongs here only if its input arrives on
+> stdin and its output is text. If the job needs to read a repository to do its
+> work, it is an agent — see [AGENT_GUIDE.md](AGENT_GUIDE.md) and
+> [squad-agents](https://github.com/cowdogmoo/squad-agents).
 
 ## Table of Contents
 
@@ -22,16 +27,21 @@ standards established in this repository.
 
 ## Introduction
 
-### What is a Fabric Pattern?
+### What is a Pattern?
 
-A fabric pattern is a structured prompt designed to solve a specific problem
-using AI. Patterns are the "fundamental units" of the
-[Fabric](https://github.com/danielmiessler/fabric) framework - reusable,
-composable components that can be chained together for complex workflows.
+A pattern is a structured prompt plus a deterministic output filter, designed to
+solve one specific text-transformation problem. Patterns are reusable and
+composable: each reads stdin, emits text on stdout, and can be chained.
+
+The format originated with the
+[Fabric](https://github.com/danielmiessler/fabric) framework and stays
+compatible with it, but the patterns here are driven by squad's pure-text
+transform.
 
 ### Design Philosophy
 
-From the official Fabric documentation:
+From the original Fabric documentation, still the clearest statement of the
+approach:
 
 > "We tend to use the System section of the prompt almost exclusively...
 > extremely clear in our instructions, and using Markdown structure to
@@ -81,7 +91,7 @@ patterns/
 
 ### Naming Conventions
 
-- **Pattern names**: lowercase, hyphen-separated (`go-security-audit`, `changelog`)
+- **Pattern names**: lowercase, hyphen-separated (`commit`, `pr`, `branch`)
 - **Knowledge bases**: `<topic>-standards.md` or `<topic>-guide.md`
 - **Test files**: `test-<description>.<ext>`
 
@@ -138,7 +148,8 @@ You help with code.
 Reference companion documentation when the pattern requires deep domain
 knowledge. Use **CRITICAL** markers to enforce application.
 
-**Example** (from `changelog/system.md`):
+**Example** (from the changelog pattern, now the `changelog` agent in
+[squad-agents](https://github.com/cowdogmoo/squad-agents)):
 
 ```markdown
 # KNOWLEDGE BASE
@@ -204,7 +215,8 @@ Rules for formatting and content. Use bullet points for clarity.
 Provide a complete template showing exact output structure. Use code blocks
 with language identifiers.
 
-**Example** (from `changelog/system.md`):
+**Example** (from the changelog pattern, now the `changelog` agent in
+[squad-agents](https://github.com/cowdogmoo/squad-agents)):
 
 ````markdown
 # OUTPUT FORMAT
@@ -304,7 +316,9 @@ Knowledge base files should include:
 5. **Quality Checklist** - Verification criteria
 6. **References** - External documentation links
 
-**Example structure** (from `changelog-standards.md`):
+**Example structure** (from `changelog-standards.md`, now the
+`changelog-standards` skill in
+[squad-agents](https://github.com/cowdogmoo/squad-agents)):
 
 ```markdown
 # Changelog Standards
@@ -765,7 +779,7 @@ pattern-name/
 
 Adds filter script and README. Recommended for most patterns.
 
-**Examples:** `changelog`, `readme`
+**Examples:** `commit`, `pr`
 
 **Contents:**
 
@@ -780,7 +794,7 @@ pattern-name/
 
 Full suite with knowledge base and testing. Required for complex domains.
 
-**Examples:** `go-security-audit`, `go-tests`, `grafana-dashboard-audit`
+**Examples:** `branch` (filter plus ref validation and a test harness)
 
 **Contents:**
 
